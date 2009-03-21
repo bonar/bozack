@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project default="compile">
+
+  <property name="source" value="./src"/>
+  <property name="dest"   value="./classes"/>
+  
+  <target name="mkdir"><mkdir dir="${dest}"/></target>
+  <target name="clean"><delete dir="${dest}"/></target>
+
+  <target name="compile" depends="mkdir">
+    <javac srcdir="${source}" destdir="${dest}"/>
+  </target>
+
+  <target name="run" depends="compile">
+    <java classname="StartFilter" classpath="${dest}" fork="yes"/>
+  </target>
+
+</project>
+
+
