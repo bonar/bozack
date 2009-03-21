@@ -71,8 +71,11 @@ public class Bridge {
         , CustomReceiver recv) 
         throws MidiUnavailableException {
 
+        if (!device_out.isOpen()) {
+            device_out.open();
+        }
         // tell receiver where he has to send messages
-        recv.dest_synth(device_out);
+        recv.setSynth(device_out);
 
         Transmitter trans;
         trans = device_in.getTransmitter();

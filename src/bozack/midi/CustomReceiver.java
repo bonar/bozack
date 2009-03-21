@@ -9,23 +9,19 @@ public class CustomReceiver
     protected MidiChannel defaultChannel;
     public boolean debug = false;
 
-    public void dest_synth(MidiDevice device) {
+    public void setSynth(MidiDevice device) {
         if (!(device instanceof Synthesizer)) {
             throw new IllegalArgumentException(
                 "device is not a Synthesizer");
         }
         this.synth = (Synthesizer)device;
-    }
 
-    public MidiChannel getDefaultChannel() {
-        if (null == this.synth) {
-            throw new IllegalStateException("synth not specified");
-        }
+        // pickup first channel
         MidiChannel[] channels = this.synth.getChannels();
         if (0 == channels.length) {
             throw new IllegalStateException("no channels available");
         }
-        return channels[0];
+        this.defaultChannel = channels[0];
     }
 
     public void dumpMessage(MidiMessage message) {
@@ -35,6 +31,14 @@ public class CustomReceiver
             System.out.print("[" + body[i] + "]");
         }
         System.out.print(" status:" + message.getStatus() + " ");
+
+        if (message instanceof ShortMessage) {
+            ShortMessage sm = ((ShortMessage)message);
+            System.out.print("(" + sm.getCommand() + ")");
+            System.out.print("(" + sm.getData1() + ")");
+            System.out.print("(" + sm.getData2() + ")");
+            System.out.print(" ");
+        }
         System.out.println("");
     }
 

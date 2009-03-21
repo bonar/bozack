@@ -2,7 +2,7 @@
 package bozack.midi;
 import javax.sound.midi.*;
 
-public class RecvDumpRelay
+public class RecvScaleMinorize
     extends CustomReceiver {
 
     public void send(MidiMessage message, long timeStamp) {
@@ -15,14 +15,30 @@ public class RecvDumpRelay
             switch(sm.getCommand()) {
                 case ShortMessage.NOTE_ON:
                     this.defaultChannel.noteOn(
-                        sm.getData1(), sm.getData2());
+                        minorize(sm.getData1()), sm.getData2());
                     break;
                 case ShortMessage.NOTE_OFF:
                     this.defaultChannel.noteOff(
-                        sm.getData1(), sm.getData2());
+                        minorize(sm.getData1()), sm.getData2());
                     break;
             }
         }
+    }
+
+    private int minorize(int origin) {
+        int minorized = origin;
+        switch (origin % 12) {
+            case 4:
+                minorized--;
+                break;
+            case 9:
+                minorized--;
+                break;
+            case 11:
+                minorized--;
+                break;
+        }
+        return minorized;
     }
 }
 

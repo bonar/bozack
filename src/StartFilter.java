@@ -22,17 +22,51 @@ class StartFilter {
             System.exit(0);
         }
 
-        // bridge.connectEcho();
-        RecvDumpRelay recv = new RecvDumpRelay();
-        recv.debug = true;
-        try {
-            bridge.connect(
-                (MidiDevice)(devices.get(device_num_in)),
-                (MidiDevice)(devices.get(device_num_out)),
-                recv);
-        } catch (MidiUnavailableException e) {
-            System.err.println(e.getMessage());
-            System.exit(0);
+        // mode select
+        System.out.println("1: simple relay");
+        System.out.println("2: dump and relay");
+        System.out.println("3: (filter) scale minorize");
+        int mode = readIntFromStdin("which mode: ");
+
+        switch (mode) {
+            case 1:
+                try {
+                    bridge.connect(
+                        (MidiDevice)(devices.get(device_num_in)),
+                        (MidiDevice)(devices.get(device_num_out)));
+                } catch (MidiUnavailableException e) {
+                    System.err.println(e.getMessage());
+                    System.exit(0);
+                }
+                break;
+            case 2:
+                RecvDumpRelay recv1 = new RecvDumpRelay();
+                recv1.debug = true;
+                try {
+                    bridge.connect(
+                        (MidiDevice)(devices.get(device_num_in)),
+                        (MidiDevice)(devices.get(device_num_out)),
+                        recv1);
+                } catch (MidiUnavailableException e) {
+                    System.err.println(e.getMessage());
+                    System.exit(0);
+                }
+                break;
+            case 3:
+                RecvScaleMinorize recv2 = new RecvScaleMinorize();
+                recv2.debug = true;
+                try {
+                    bridge.connect(
+                        (MidiDevice)(devices.get(device_num_in)),
+                        (MidiDevice)(devices.get(device_num_out)),
+                        recv2);
+                } catch (MidiUnavailableException e) {
+                    System.err.println(e.getMessage());
+                    System.exit(0);
+                }
+                break;
+            default:
+                System.exit(0);
         }
 
         // command line operation
