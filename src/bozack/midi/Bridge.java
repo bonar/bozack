@@ -6,75 +6,37 @@ import java.util.ArrayList;
 import javax.sound.midi.*;
 
 public class Bridge {
-    private ArrayList<MidiDevice> devices = new ArrayList<MidiDevice>();
-    private int in_device_index;
-    private int out_device_index;
+    protected int in_device_index;
+    protected int out_device_index;
+    protected MidiDevice deviceIn;
+    protected MidiDevice deviceOut;
 
-    public Bridge() {
-        this.scan_device_info();
-    }
+    public Bridge() { }
 
-    protected int scan_device_info() {
+    public static ArrayList<MidiDevice> getDevices() {
+        ArrayList<MidiDevice> devices = new ArrayList<MidiDevice>();
+
         MidiDevice.Info[] infos = MidiSystem.getMidiDeviceInfo();
-        System.out.println("" + infos.length + " devices found.");
-
         for (int i = 0; i < infos.length; i++) {
             MidiDevice.Info info = infos[i];
             MidiDevice dev = null;
             try {
                 dev = MidiSystem.getMidiDevice(info);
-                this.devices.add(dev);
+                devices.add(dev);
             } catch (SecurityException e) {
                 System.err.println(e.getMessage());
             } catch (MidiUnavailableException e) {
                 System.err.println(e.getMessage());
             }
         }
-        return this.devices.size();
+        return devices;
     }
 
-    public boolean echo_connect() {
-        MidiDevice in_device  = this.devices.get(this.in_device_index);
-        MidiDevice out_device = this.devices.get(this.out_device_index);
+    public static void dumpDeviceInfo() {
+        ArrayList<MidiDevice> devices = getDevices();
 
-        javax.sound.midi.Transmitter trans;
-        javax.sound.midi.Receiver recv;
-        try {
-            if (!out_device.isOpen()) {
-                out_device.open();
-            }
-            trans = in_device.getTransmitter();
-            recv  = out_device.getReceiver();
-            trans.setReceiver(recv);
-        } catch(MidiUnavailableException e) {
-            System.err.println(e.getMessage());
-            return false;
-        }
-        return true;
-    }
-
-    public boolean custom_connect(CustomReceiver recv) {
-        MidiDevice in_device  = this.devices.get(this.in_device_index);
-        MidiDevice out_device = this.devices.get(this.out_device_index);
-
-        recv.set_out_device(out_device);
-        javax.sound.midi.Transmitter trans;
-        try {
-            trans = in_device.getTransmitter();
-        } catch (MidiUnavailableException e) {
-            System.err.println(e.getMessage());
-            return false;
-        }
-        trans.setReceiver(recv);
-        return true;
-    }
-
-    public void dump_device_info() {
-        if (this.devices.size() == 0) {
-            return;
-        }
-        for (int i = 0; i < this.devices.size(); i++) {
-            MidiDevice device = this.devices.get(i);
+        for (int i = 0; i < devices.size(); i++) {
+            MidiDevice device = devices.get(i);
             MidiDevice.Info info = device.getDeviceInfo();
             System.out.println("[" + i + "] devinfo: " + info.toString());
             System.out.println("  name:"        + info.getName());
@@ -91,21 +53,30 @@ public class Bridge {
         }
     }
 
-    public int set_device_in(int index) {
-        if (index < 0 || this.devices.size() <= index) {
-            return -1;
+    public void connect(MidiDevice device_in, MidiDevice device_out) 
+        throws MidiUnavailableException {
+
+        javax.sound.midi.Transmitter trans;
+        javax.sound.midi.Receiver recv;
+
+        if (!device_out.isOpen()) {
+            device_out.open();
         }
-        this.in_device_index = index;
-        return index;
-    }
-    public int set_device_out(int index) {
-        if (index < 0 || this.devices.size() <= index) {
-            return -1;
-        }
-        this.out_device_index = index;
-        return index;
+        trans = device_in.getTransmitter();
+        recv  = device_out.getReceiver();
+        trans.setReceiver(recv);
     }
 
+    public void connect(MidiDevice device_in, MidiDevice device_out
+        , CustomReceiver recv) 
+        throws MidiUnavailableException {
 
+        // tell receiver where he has to send messages
+        recv.dest_synth(device_out);
+
+        Transmitter trans;
+        trans = device_in.getTransmitter();
+        trans.setReceiver(recv);
+    }
 }
 

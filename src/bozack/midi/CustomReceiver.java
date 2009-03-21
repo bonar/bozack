@@ -5,12 +5,30 @@ import javax.sound.midi.*;
 public class CustomReceiver
     implements javax.sound.midi.Receiver {
 
-    protected MidiDevice out_device;
-    public void set_out_device(MidiDevice device) {
-        this.out_device = device;
+    protected Synthesizer synth;
+    protected MidiChannel defaultChannel;
+    public boolean debug = false;
+
+    public void dest_synth(MidiDevice device) {
+        if (!(device instanceof Synthesizer)) {
+            throw new IllegalArgumentException(
+                "device is not a Synthesizer");
+        }
+        this.synth = (Synthesizer)device;
     }
 
-    public void dump_message(MidiMessage message) {
+    public MidiChannel getDefaultChannel() {
+        if (null == this.synth) {
+            throw new IllegalStateException("synth not specified");
+        }
+        MidiChannel[] channels = this.synth.getChannels();
+        if (0 == channels.length) {
+            throw new IllegalStateException("no channels available");
+        }
+        return channels[0];
+    }
+
+    public void dumpMessage(MidiMessage message) {
         System.out.print("size:" + message.getLength() + " ");
         byte[] body = message.getMessage();
         for (int i = 0; i < message.getLength(); i++) {

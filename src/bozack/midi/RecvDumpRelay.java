@@ -6,9 +6,11 @@ public class RecvDumpRelay
     extends CustomReceiver {
 
     public void send(MidiMessage message, long timeStamp) {
-        dump_message(message);
-    }
+        if (this.debug) {
+            dumpMessage(message);
+        }
 
-    public void close() { }
+        MidiChannel target_ch = this.getDefaultChannel();
+    }
 }
 

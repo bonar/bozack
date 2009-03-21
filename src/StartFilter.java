@@ -1,28 +1,39 @@
 
 import java.io.*;
+import java.util.ArrayList;
+import javax.sound.midi.*;
 import bozack.midi.*;
 
 class StartFilter {
     public static void main (String[] args) {
         bozack.midi.Bridge bridge = new bozack.midi.Bridge();
-        bridge.dump_device_info();
+        Bridge.dumpDeviceInfo();
+        ArrayList devices = Bridge.getDevices();
 
         // select IN/OUT MIDI devices
-        int device_in = read_int_from_stdin("select input device: ");
-        if (0 > bridge.set_device_in(device_in)) {
-            System.err.println("invalid index: " + device_in);
+        int device_num_in = readIntFromStdin("select input device: ");
+        if (0 > device_num_in || device_num_in >= devices.size()) {
+            System.err.println("invalid index: " + device_num_in);
             System.exit(0);
         }
-        int device_out = read_int_from_stdin("select output device: ");
-        if (0 > bridge.set_device_out(device_out)) {
-            System.err.println("invalid index: " + device_out);
+        int device_num_out = readIntFromStdin("select output device: ");
+        if (0 > device_num_out || device_num_out >= devices.size()) {
+            System.err.println("invalid index: " + device_num_out);
             System.exit(0);
         }
 
-        // bridge.echo_connect();
+        // bridge.connectEcho();
         RecvDumpRelay recv = new RecvDumpRelay();
-        bridge.custom_connect(recv);
-
+        recv.debug = true;
+        try {
+            bridge.connect(
+                (MidiDevice)(devices.get(device_num_in)),
+                (MidiDevice)(devices.get(device_num_out)),
+                recv);
+        } catch (MidiUnavailableException e) {
+            System.err.println(e.getMessage());
+            System.exit(0);
+        }
 
         // command line operation
         InputStreamReader cmdin = new InputStreamReader(System.in);
@@ -37,7 +48,7 @@ class StartFilter {
         }
     }
 
-    public static int read_int_from_stdin(String label) {
+    public static int readIntFromStdin(String label) {
         BufferedReader inbuf = new BufferedReader(
             new InputStreamReader(System.in));
         System.out.println(label);
