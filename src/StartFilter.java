@@ -3,6 +3,7 @@ import java.io.*;
 import java.util.ArrayList;
 import javax.sound.midi.*;
 import bozack.midi.*;
+import bozack.midi.receiver.*;
 
 class StartFilter {
     public static void main (String[] args) {
@@ -40,7 +41,7 @@ class StartFilter {
                 }
                 break;
             case 2:
-                RecvDumpRelay recv1 = new RecvDumpRelay();
+                DumpRelay recv1 = new DumpRelay();
                 recv1.debug = true;
                 try {
                     bridge.connect(
@@ -53,7 +54,7 @@ class StartFilter {
                 }
                 break;
             case 3:
-                RecvScaleMinorize recv2 = new RecvScaleMinorize();
+                ScaleMinorize recv2 = new ScaleMinorize();
                 recv2.debug = true;
                 try {
                     bridge.connect(

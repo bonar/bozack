@@ -1,8 +1,10 @@
 
-package bozack.midi;
+package bozack.midi.receiver;
+
+import bozack.midi.receiver.CustomReceiver;
 import javax.sound.midi.*;
 
-public class RecvDumpRelay
+public class DumpRelay
     extends CustomReceiver {
 
     public void send(MidiMessage message, long timeStamp) {

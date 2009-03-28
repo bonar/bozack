@@ -1,5 +1,5 @@
 
-package bozack.midi;
+package bozack.midi.receiver;
 import javax.sound.midi.*;
 
 public class CustomReceiver

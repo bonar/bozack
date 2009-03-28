@@ -1,6 +1,7 @@
 
 package bozack.midi;
 
+import bozack.midi.receiver.CustomReceiver;
 import java.io.*;
 import java.util.ArrayList;
 import javax.sound.midi.*;

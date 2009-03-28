@@ -1,8 +1,9 @@
 
-package bozack.midi;
+package bozack.midi.receiver;
+import bozack.midi.receiver.CustomReceiver;
 import javax.sound.midi.*;
 
-public class RecvScaleMinorize
+public class ScaleMinorize
     extends CustomReceiver {
 
     public void send(MidiMessage message, long timeStamp) {
