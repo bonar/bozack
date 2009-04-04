@@ -1,6 +1,9 @@
 
 package bozack;
 
+import java.util.HashMap;
+import bozack.Types;
+
 public class Note {
     private static int MAX_NOTE    = 100;
     private static int PITCH_SCALE = 12;
@@ -9,13 +12,21 @@ public class Note {
     private int octav;
     private int pitch;
 
+    private static PitchMap pitchMap = Types.pitchNameNoteHash();
+
     public Note(int note) {
         if (note < 0 || note > MAX_NOTE) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("note is too big");
         }
         this.note  = note;
         this.octav = (note / PITCH_SCALE);
         this.pitch = note - (this.octav * PITCH_SCALE);
+    }
+
+    public Note(PitchName pn, int octav) {
+        this((octav * PITCH_SCALE) + 
+            (Integer)pitchMap.get(pn).intValue()
+        );
     }
 
     public int getNote() {

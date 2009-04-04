@@ -16,6 +16,7 @@
  
   <target name="compile" depends="mkdir">
     <javac srcdir="src" classpathref="run.cp" destdir="classes"/>
+    <javac srcdir="test" classpathref="run.cp" destdir="classes"/>
   </target>
  
   <target name="run" depends="compile">

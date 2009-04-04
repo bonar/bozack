@@ -1,9 +1,7 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
 <suite name="bozack test suite" thread-count="1" parallel="tests">
   <test name="note">
-    <classes>
-      <class name="bozack.test.TestNote">
-      </class>
+    <classes><class name="bozack.TestNote"></class>
     </classes>
   </test>
 </suite>
