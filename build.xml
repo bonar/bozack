@@ -11,6 +11,7 @@
  
   <target name="clean">
     <delete dir="classes"/>
+    <delete dir="test-output"/>
   </target>
  
   <target name="compile" depends="mkdir">
@@ -22,11 +23,21 @@
   </target>
  
   <!-- test -->
-  <taskdef resource="testngtasks"/>
+  <taskdef 
+    resource="testngtasks" 
+    classpath="lib/testng-5.9-jdk15.jar"
+  />
   <target name="test" depends="compile">
-    <testng classpathref="run.cp" haltOnfailure="true">
-      <classpath><pathelement location="classes" /></classpath>
-      <xmlfileset includes="testng.xml" />
+    <testng
+      classpathref="run.cp"
+      haltOnfailure="true"
+      dumpcommand="true"
+      verbose="2" 
+    >
+      <classpath>
+        <pathelement location="classes" />
+      </classpath>
+      <xmlfileset dir="." includes="testng.xml" />
     </testng>
   </target>
   <!-- /test -->
