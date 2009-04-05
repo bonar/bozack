@@ -39,6 +39,34 @@ public class TestNote {
         assertEquals(af3.getNote(), 44);
         assertEquals(af3.getOctav(), 3);
     }
+    @Test
+    public void equals_and_hashCode() {
+        bozack.Note a30 = new bozack.Note(30);
+        bozack.Note a31 = new bozack.Note(31);
+        
+        bozack.Note b30 = new bozack.Note(30);
+        bozack.Note b31 = new bozack.Note(31);
+
+        assertEquals(a30.equals(a30), true);
+        assertEquals(a30.equals(a31), false);
+        assertEquals(a31.equals(a30), false);
+        assertEquals(a31.equals(a31), true);
+
+        assertEquals(a30.equals(b30), true);
+        assertEquals(a31.equals(b31), true);
+        assertEquals(a30.equals(b31), false);
+        assertEquals(a31.equals(b30), false);
+
+        assertEquals(a30.hashCode(), a30.hashCode());
+        assertNotSame(a30.hashCode(), a31.hashCode());
+        assertNotSame(a31.hashCode(), a30.hashCode());
+        assertEquals(a31.hashCode(), a31.hashCode());
+
+        assertEquals(a30.hashCode(), b30.hashCode());
+        assertEquals(a31.hashCode(), b31.hashCode());
+        assertNotSame(a30.hashCode(), b31.hashCode());
+        assertNotSame(a31.hashCode(), b30.hashCode());
+    }
 
 }
 

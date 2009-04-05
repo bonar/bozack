@@ -2,10 +2,10 @@
 package bozack.midi.receiver;
 import bozack.Note;
 import javax.sound.midi.*;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.ArrayList;
 
-final class NoteSet extends HashSet<Note> {}
+final class NoteSet extends LinkedHashSet<Note> {}
 final class NoteHistory extends ArrayList<Note> {}
 
 public class CustomReceiver
@@ -14,6 +14,12 @@ public class CustomReceiver
     protected Synthesizer synth;
     protected MidiChannel defaultChannel;
     protected NoteSet onNote;
+    protected NoteHistory onNoteHistory;
+
+    public CustomReceiver() {
+        this.onNote        = new NoteSet();
+        this.onNoteHistory = new NoteHistory();
+    }
 
     public void setSynth(MidiDevice device) {
         if (!(device instanceof Synthesizer)) {
@@ -53,19 +59,31 @@ public class CustomReceiver
         dumpMessage(message);
         if (message instanceof ShortMessage) {
             ShortMessage sm = ((ShortMessage)message);
-            handleShortMessage(sm, timeStamp);
+            this.updateOnNoteSet(sm);
+            this.handleShortMessage(sm, timeStamp);
             return;
         }
-        handleMessage(message, timeStamp);
+        System.out.println("not short message");
+        this.handleMessage(message, timeStamp);
     }
 
-    private void updateOnNoteSet(MidiMessage message) {
+    private void updateOnNoteSet(ShortMessage sm) {
+        Note note = new Note(sm.getData1());
+        switch(sm.getCommand()) {
+            case ShortMessage.NOTE_ON:
+                this.onNote.add(note);
+                break;
+            case ShortMessage.NOTE_OFF:
+                this.onNote.remove(note);
+                break;
+        }
     }
 
     protected void handleMessage(
         MidiMessage message, long timeStamp) { }
     protected void handleShortMessage(
-        ShortMessage message, long timeStamp) { }
+        ShortMessage message, long timeStamp) { 
+        System.out.println("parent method"); }
     public void close() { }
 }
 

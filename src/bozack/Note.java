@@ -57,5 +57,25 @@ public final class Note {
         sb.append(pitchNum.get(this.pitch));
         return sb.toString();
     }
+
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (obj instanceof Note) {
+            Note n = (Note)obj;
+            if (this.note == n.getNote()) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+        return false;
+    }
+
+    public int hashCode() {
+        return this.note;
+    }
 }
 
