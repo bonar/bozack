@@ -1,8 +1,9 @@
 
 package bozack;
 
-import java.util.HashMap;
 import bozack.Types;
+import bozack.NoteSet;
+import bozack.NoteList;
 
 public final class Note {
     private static final int MAX_NOTE    = 100;

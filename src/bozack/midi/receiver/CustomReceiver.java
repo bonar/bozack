@@ -1,12 +1,10 @@
 
 package bozack.midi.receiver;
-import bozack.Note;
-import javax.sound.midi.*;
-import java.util.LinkedHashSet;
-import java.util.ArrayList;
 
-final class NoteSet extends LinkedHashSet<Note> {}
-final class NoteHistory extends ArrayList<Note> {}
+import javax.sound.midi.*;
+import bozack.Note;
+import bozack.NoteSet;
+import bozack.NoteList;
 
 public class CustomReceiver
     implements javax.sound.midi.Receiver {
@@ -14,11 +12,11 @@ public class CustomReceiver
     protected Synthesizer synth;
     protected MidiChannel defaultChannel;
     protected NoteSet onNote;
-    protected NoteHistory onNoteHistory;
+    protected NoteList onNoteHistory;
 
     public CustomReceiver() {
         this.onNote        = new NoteSet();
-        this.onNoteHistory = new NoteHistory();
+        this.onNoteHistory = new NoteList();
     }
 
     public void setSynth(MidiDevice device) {
