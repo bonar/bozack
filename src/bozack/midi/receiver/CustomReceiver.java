@@ -79,6 +79,10 @@ public class CustomReceiver
         }
     }
 
+    private void appendHistory(ShortMessage sm) {
+        this.onNoteHistory.add(new Note(sm.getData1()));
+    }
+
     protected void handleMessage(
         MidiMessage message, long timeStamp) { }
     protected void handleShortMessage(
