@@ -64,15 +64,15 @@ public class TestSafeInterval {
         assertEquals(controller.getAllNote().size(), 1);
 
         controller.add(new Note(50));
-        assertEquals(controller.getLastNote(), new Note(54));
+        assertEquals(controller.getLastNote(), new Note(55));
         assertEquals(controller.getAllNote().size(), 2);
 
         controller.add(new Note(50));
-        assertEquals(controller.getLastNote(), new Note(58));
+        assertEquals(controller.getLastNote(), new Note(60));
         assertEquals(controller.getAllNote().size(), 3);
 
         controller.add(new Note(58));
-        assertEquals(controller.getLastNote(), new Note(62));
+        assertEquals(controller.getLastNote(), new Note(65));
         assertEquals(controller.getAllNote().size(), 4);
     }
 }
