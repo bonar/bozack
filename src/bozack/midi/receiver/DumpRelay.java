@@ -8,10 +8,8 @@ import javax.sound.midi.*;
 public class DumpRelay
     extends CustomReceiver {
 
-    public void send(MidiMessage message, long timeStamp) {
-        if (this.debug) {
-            dumpMessage(message);
-        }
+    public void handleMessage(MidiMessage message, long timeStamp) {
+        dumpMessage(message);
 
         if (message instanceof ShortMessage) {
             ShortMessage sm = ((ShortMessage)message);

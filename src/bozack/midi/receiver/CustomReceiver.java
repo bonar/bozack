@@ -24,7 +24,7 @@ public class CustomReceiver
         this.defaultChannel = channels[0];
     }
 
-    public void dumpMessage(MidiMessage message) {
+    public static void dumpMessage(MidiMessage message) {
         System.out.print("size:" + message.getLength() + " ");
         byte[] body = message.getMessage();
         for (int i = 0; i < message.getLength(); i++) {
@@ -34,16 +34,21 @@ public class CustomReceiver
 
         if (message instanceof ShortMessage) {
             ShortMessage sm = ((ShortMessage)message);
-            System.out.print("(" + sm.getCommand() + ")");
-            System.out.print("(" + sm.getData1() + ")");
-            System.out.print("(" + sm.getData2() + ")");
-            System.out.print(" ");
+            StringBuilder sb = new StringBuilder();
+            sb.append("(" + sm.getCommand() + ")");
+            sb.append("(" + sm.getData1() + ")");
+            sb.append("(" + sm.getData2() + ") ");
+            System.out.print(sb.toString());
         }
         System.out.println("");
     }
 
     public void send(MidiMessage message, long timeStamp) {
-        System.out.println(message.getMessage());
+        handleMessage(message, timeStamp);
+    }
+
+    protected void handleMessage(MidiMessage message, long timeStamp) {
+
     }
 
     public void close() { }

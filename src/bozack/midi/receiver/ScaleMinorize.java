@@ -6,7 +6,7 @@ import javax.sound.midi.*;
 public class ScaleMinorize
     extends CustomReceiver {
 
-    public void send(MidiMessage message, long timeStamp) {
+    public void handleMessage(MidiMessage message, long timeStamp) {
         if (this.debug) {
             dumpMessage(message);
         }
