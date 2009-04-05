@@ -29,12 +29,28 @@ enum SpanType {
 }
 
 /**
+ * NoteSpan is used to represent distance from the Note to 
+ * another Note in some Chord
+ */
+final class NoteSpan {
+    private final int[] span;
+
+    NoteSpan(int[] span) {
+        this.span = span;
+    }
+
+    public int[] getSpan() {
+        return this.span;
+    }
+}
+
+/**
  * ScanType String to IntegerArray
  * @see bozack.Chord
  */
-class SpanTypeMap extends HashMap<SpanType, int[]> {}
+final class SpanTypeMap extends HashMap<SpanType, NoteSpan> {}
 
-public class Types {
+public final class Types {
     // not to create instance
     private Types() {}
 
@@ -79,6 +95,16 @@ public class Types {
         n.put(10, PitchName.A_SHARP);
         n.put(11, PitchName.B);
         return n;
+    }
+
+    public static SpanTypeMap getSpanTypeMap() {
+        SpanTypeMap s = new SpanTypeMap();
+        s.put(SpanType.ST_PLAIN, new NoteSpan(new int[] {0, 4, 7}));
+        s.put(SpanType.ST_M,     new NoteSpan(new int[] {0, 4, 7}));
+        s.put(SpanType.ST_m,     new NoteSpan(new int[] {0, 3, 7}));
+        s.put(SpanType.ST_m7,    new NoteSpan(new int[] {0, 3, 7, 10}));
+        s.put(SpanType.ST_7,     new NoteSpan(new int[] {0, 4, 7, 10}));
+        return s;
     }
 
  

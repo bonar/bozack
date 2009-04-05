@@ -4,7 +4,7 @@ package bozack;
 import java.util.HashMap;
 import bozack.Types;
 
-public class Note {
+public final class Note {
     private static final int MAX_NOTE    = 100;
     private static final int PITCH_SCALE = 12;
 
