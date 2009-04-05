@@ -41,26 +41,22 @@ class StartFilter {
                 }
                 break;
             case 2:
-                DumpRelay recv1 = new DumpRelay();
-                recv1.debug = true;
                 try {
                     bridge.connect(
                         (MidiDevice)(devices.get(device_num_in)),
                         (MidiDevice)(devices.get(device_num_out)),
-                        recv1);
+                        new DumpRelay());
                 } catch (MidiUnavailableException e) {
                     System.err.println(e.getMessage());
                     System.exit(0);
                 }
                 break;
             case 3:
-                ScaleMinorize recv2 = new ScaleMinorize();
-                recv2.debug = true;
                 try {
                     bridge.connect(
                         (MidiDevice)(devices.get(device_num_in)),
                         (MidiDevice)(devices.get(device_num_out)),
-                        recv2);
+                        new ScaleMinorize());
                 } catch (MidiUnavailableException e) {
                     System.err.println(e.getMessage());
                     System.exit(0);

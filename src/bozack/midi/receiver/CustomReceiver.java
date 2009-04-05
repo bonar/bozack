@@ -7,7 +7,6 @@ public class CustomReceiver
 
     protected Synthesizer synth;
     protected MidiChannel defaultChannel;
-    public boolean debug = false;
 
     public void setSynth(MidiDevice device) {
         if (!(device instanceof Synthesizer)) {
@@ -44,6 +43,7 @@ public class CustomReceiver
     }
 
     public void send(MidiMessage message, long timeStamp) {
+        dumpMessage(message);
         handleMessage(message, timeStamp);
     }
 

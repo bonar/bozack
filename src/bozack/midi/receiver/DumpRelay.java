@@ -9,8 +9,6 @@ public class DumpRelay
     extends CustomReceiver {
 
     public void handleMessage(MidiMessage message, long timeStamp) {
-        dumpMessage(message);
-
         if (message instanceof ShortMessage) {
             ShortMessage sm = ((ShortMessage)message);
             switch(sm.getCommand()) {
