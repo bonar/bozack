@@ -6,19 +6,16 @@ import javax.sound.midi.*;
 public class ScaleMinorize
     extends CustomReceiver {
 
-    public void handleMessage(MidiMessage message, long timeStamp) {
-        if (message instanceof ShortMessage) {
-            ShortMessage sm = ((ShortMessage)message);
-            switch(sm.getCommand()) {
-                case ShortMessage.NOTE_ON:
-                    this.defaultChannel.noteOn(
-                        minorize(sm.getData1()), sm.getData2());
-                    break;
-                case ShortMessage.NOTE_OFF:
-                    this.defaultChannel.noteOff(
-                        minorize(sm.getData1()), sm.getData2());
-                    break;
-            }
+    public void handleShortMessage(ShortMessage sm, long timeStamp) {
+        switch(sm.getCommand()) {
+            case ShortMessage.NOTE_ON:
+                this.defaultChannel.noteOn(
+                    minorize(sm.getData1()), sm.getData2());
+                break;
+            case ShortMessage.NOTE_OFF:
+                this.defaultChannel.noteOff(
+                    minorize(sm.getData1()), sm.getData2());
+                break;
         }
     }
 

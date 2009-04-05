@@ -1,12 +1,19 @@
 
 package bozack.midi.receiver;
+import bozack.Note;
 import javax.sound.midi.*;
+import java.util.HashSet;
+import java.util.ArrayList;
+
+final class NoteSet extends HashSet<Note> {}
+final class NoteHistory extends ArrayList<Note> {}
 
 public class CustomReceiver
     implements javax.sound.midi.Receiver {
 
     protected Synthesizer synth;
     protected MidiChannel defaultChannel;
+    protected NoteSet onNote;
 
     public void setSynth(MidiDevice device) {
         if (!(device instanceof Synthesizer)) {
@@ -44,13 +51,21 @@ public class CustomReceiver
 
     public void send(MidiMessage message, long timeStamp) {
         dumpMessage(message);
+        if (message instanceof ShortMessage) {
+            ShortMessage sm = ((ShortMessage)message);
+            handleShortMessage(sm, timeStamp);
+            return;
+        }
         handleMessage(message, timeStamp);
     }
 
-    protected void handleMessage(MidiMessage message, long timeStamp) {
-
+    private void updateOnNoteSet(MidiMessage message) {
     }
 
+    protected void handleMessage(
+        MidiMessage message, long timeStamp) { }
+    protected void handleShortMessage(
+        ShortMessage message, long timeStamp) { }
     public void close() { }
 }
 
