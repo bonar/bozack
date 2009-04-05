@@ -27,6 +27,7 @@ class StartFilter {
         System.out.println("1: simple relay");
         System.out.println("2: dump and relay");
         System.out.println("3: (filter) scale minorize");
+        System.out.println("4: (filter) safe interval");
         int mode = readIntFromStdin("which mode: ");
 
         switch (mode) {
@@ -62,6 +63,18 @@ class StartFilter {
                     System.exit(0);
                 }
                 break;
+            case 4:
+                try {
+                    bridge.connect(
+                        (MidiDevice)(devices.get(device_num_in)),
+                        (MidiDevice)(devices.get(device_num_out)),
+                        new HarmonySafe());
+                } catch (MidiUnavailableException e) {
+                    System.err.println(e.getMessage());
+                    System.exit(0);
+                }
+                break;
+
             default:
                 System.exit(0);
         }

@@ -7,7 +7,7 @@ import java.util.Iterator;
 public final class SafeInterval
     implements bozack.HarmonyController {
 
-    private static int SAFE_INTERVAL = 3;
+    private static int SAFE_INTERVAL = 4;
     private NoteSet notes = new NoteSet();
 
     public SafeInterval() {}
