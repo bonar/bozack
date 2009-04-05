@@ -18,6 +18,10 @@ public final class Note {
     private int octav;
     private int pitch;
 
+    public static int getMaxNote() {
+        return MAX_NOTE;
+    }
+
     public Note(int note) {
         if (note < 0 || note > MAX_NOTE) {
             throw new IllegalArgumentException(
