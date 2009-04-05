@@ -35,8 +35,8 @@ public class TestNote {
 
         bozack.Note af3 = new bozack.Note(PitchName.A_FLAT, 3);
         assertNotNull(af3);
-        assertEquals(af3.getPitch(), 9);
-        assertEquals(af3.getNote(), 45);
+        assertEquals(af3.getPitch(), 8);
+        assertEquals(af3.getNote(), 44);
         assertEquals(af3.getOctav(), 3);
     }
 
