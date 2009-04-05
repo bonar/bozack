@@ -23,7 +23,7 @@ public class TestNote {
     }
     @Test
     public void to_string() {
-        assertEquals(n1.toString(), "note=55 octav=4 pitch=7");
+        assertEquals(n1.toString(), "note=55 octav=4 pitch=7 G");
     }
     @Test
     public void constructWithPitchName() {

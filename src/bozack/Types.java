@@ -17,8 +17,8 @@ enum PitchName {
  * pitch String to note Interger
  * @see bozack.Note
  */
-class PitchMap extends HashMap<PitchName, Integer> {}
-class NoteMap extends HashMap<Integer, PitchName> {}
+final class PitchNameHash extends HashMap<PitchName, Integer> {}
+final class PitchNumHash  extends HashMap<Integer, PitchName> {}
 
 enum SpanType {
     ST_PLAIN,
@@ -38,8 +38,8 @@ public class Types {
     // not to create instance
     private Types() {}
 
-    public static PitchMap pitchNameNoteHash() {
-        PitchMap m = new PitchMap();
+    public static PitchNameHash getPitchNameHash() {
+        PitchNameHash m = new PitchNameHash();
         m.put(PitchName.B_SHARP, 0);
         m.put(PitchName.C,       0);
         m.put(PitchName.C_SHARP, 1);
@@ -64,8 +64,8 @@ public class Types {
         return m;
     }
 
-    public static NoteMap notePitchNameHash() {
-        NoteMap n = new NoteMap();
+    public static PitchNumHash getPitchNumHash() {
+        PitchNumHash n = new PitchNumHash();
         n.put(0,  PitchName.C);
         n.put(1,  PitchName.C_SHARP);
         n.put(2,  PitchName.D);

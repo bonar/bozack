@@ -5,27 +5,35 @@ import java.util.HashMap;
 import bozack.Types;
 
 public class Note {
-    private static int MAX_NOTE    = 100;
-    private static int PITCH_SCALE = 12;
+    private static final int MAX_NOTE    = 100;
+    private static final int PITCH_SCALE = 12;
+
+    private static final PitchNameHash pitchName
+        = Types.getPitchNameHash();
+    private static final PitchNumHash pitchNum
+        = Types.getPitchNumHash();
 
     private int note;
     private int octav;
     private int pitch;
 
-    private static PitchMap pitchMap = Types.pitchNameNoteHash();
-
     public Note(int note) {
         if (note < 0 || note > MAX_NOTE) {
-            throw new IllegalArgumentException("note is too big");
+            throw new IllegalArgumentException(
+                "too large note [" + note + "]");
         }
         this.note  = note;
         this.octav = (note / PITCH_SCALE);
         this.pitch = note - (this.octav * PITCH_SCALE);
+        if (!pitchNum.containsKey(pitch)) {
+            throw new IllegalArgumentException(
+                "invalid pitch [" + pitch + "]");
+        }
     }
 
     public Note(PitchName pn, int octav) {
         this((octav * PITCH_SCALE) + 
-            (Integer)pitchMap.get(pn).intValue()
+            (Integer)pitchName.get(pn).intValue()
         );
     }
 
@@ -45,7 +53,8 @@ public class Note {
         StringBuilder sb = new StringBuilder();
         sb.append("note="  + this.note  + " ");
         sb.append("octav=" + this.octav + " ");
-        sb.append("pitch=" + this.pitch);
+        sb.append("pitch=" + this.pitch + " ");
+        sb.append(pitchNum.get(this.pitch));
         return sb.toString();
     }
 }
