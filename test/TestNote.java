@@ -67,6 +67,20 @@ public class TestNote {
         assertNotSame(a30.hashCode(), b31.hashCode());
         assertNotSame(a31.hashCode(), b30.hashCode());
     }
+    @Test
+    public void staticValues() {
+        // no idea to test this..
+        System.out.println(bozack.Note.SEMITONE_FREQ_RATIO);
+    }
+    @Test
+    public void frequencyCalc() {
+        bozack.Note a4 = new bozack.Note(PitchName.A, 4);
+        bozack.Note a5 = new bozack.Note(PitchName.A, 5);
+        bozack.Note a6 = new bozack.Note(PitchName.A, 6);
 
+        assertEquals(a4.getFreq().intValue(), 220);
+        assertEquals(a5.getFreq().intValue(), 440);
+        assertEquals(a6.getFreq().intValue(), 880);
+    }
 }
 
