@@ -84,12 +84,23 @@ public class TestNote {
     }
     @Test
     public void dossonanceVariation() {
-        bozack.Note base = new bozack.Note(50);
+        bozack.Note base = new bozack.Note(48);
         for (int i = 0; i < 12; i++) {
-            bozack.Note target = new bozack.Note(49 + i);
+            bozack.Note target = new bozack.Note(48 + i);
             double des = base.getDessonance(target);
             assertNotNull(des);
-            System.out.printf("%d:%2.5f (%s)\n"
+            System.out.printf("(plain) %d:%2.5f (%s)\n"
+                , target.getNote(), des, target.toString());
+        }
+    }
+    @Test
+    public void dossonanceVariationOvertone() {
+        bozack.Note base = new bozack.Note(48);
+        for (int i = 0; i < 12; i++) {
+            bozack.Note target = new bozack.Note(48 + i);
+            double des = base.getDessonance(target, 5);
+            assertNotNull(des);
+            System.out.printf("(ot) %d:%2.5f (%s)\n"
                 , target.getNote(), des, target.toString());
         }
     }

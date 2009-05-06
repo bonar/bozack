@@ -23,6 +23,8 @@ public final class Note {
     private static final double PLTHEORY_ALPHA_3 = 4.00d;
     private static final double PLTHEORY_BETA    = 1.25d;
 
+    private static final float DEFAULT_OVERTONE_VELOCITY_RATIO = 0.88f;
+
     private static final PitchNameHash pitchName
         = Types.getPitchNameHash();
     private static final PitchNumHash pitchNum
@@ -65,6 +67,22 @@ public final class Note {
         );
     }
 
+    public double getDessonance(bozack.Note target, int overtone) {
+        return this.getDessonance(target, overtone
+            , DEFAULT_OVERTONE_VELOCITY_RATIO);
+    }
+    public double getDessonance(bozack.Note target
+        , int overtone, float overtone_velocity_ratio) {
+        double sum = 0.0d;
+        for (int r = 0; r < overtone; r++) {
+            bozack.Note toneA = this.getOvertone(r);
+            for (int q = 0; q < overtone; q++) {
+                bozack.Note toneB = target.getOvertone(q);
+                sum += toneA.getDessonance(toneB);
+            }
+        }
+        return sum;
+    }
     public double getDessonance(bozack.Note target) {
         if (this.getNote() == target.getNote()) {
             return 0.0d;
