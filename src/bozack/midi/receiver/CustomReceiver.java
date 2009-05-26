@@ -54,18 +54,20 @@ public class CustomReceiver
     }
 
     public void send(MidiMessage message, long timeStamp) {
-        dumpMessage(message);
         if (message instanceof ShortMessage) {
             ShortMessage sm = ((ShortMessage)message);
             this.updateOnNoteSet(sm);
             this.handleShortMessage(sm, timeStamp);
             return;
         }
-        System.out.println("not short message");
         this.handleMessage(message, timeStamp);
     }
 
     private void updateOnNoteSet(ShortMessage sm) {
+        if ((sm.getCommand() != ShortMessage.NOTE_ON)
+            && (sm.getCommand() != ShortMessage.NOTE_OFF)) {
+            return;
+        }
         Note note = new Note(sm.getData1());
         switch(sm.getCommand()) {
             case ShortMessage.NOTE_ON:

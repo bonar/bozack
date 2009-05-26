@@ -22,12 +22,18 @@ class StartFilter {
             System.err.println("invalid index: " + device_num_out);
             System.exit(0);
         }
+        int device_num_ctl = readIntFromStdin("select control device: ");
+        if (0 > device_num_ctl || device_num_ctl >= devices.size()) {
+            System.err.println("invalid index: " + device_num_out);
+            System.exit(0);
+        }
 
         // mode select
         System.out.println("1: simple relay");
         System.out.println("2: dump and relay");
         System.out.println("3: (filter) scale minorize");
         System.out.println("4: (filter) safe interval");
+        System.out.println("5: (filter) safe dessonance");
         int mode = readIntFromStdin("which mode: ");
 
         switch (mode) {
@@ -69,6 +75,26 @@ class StartFilter {
                         (MidiDevice)(devices.get(device_num_in)),
                         (MidiDevice)(devices.get(device_num_out)),
                         new HarmonySafe());
+                } catch (MidiUnavailableException e) {
+                    System.err.println(e.getMessage());
+                    System.exit(0);
+                }
+                break;
+            case 5:
+                try {
+                    DessonaceSafe recv = new DessonaceSafe();
+                    MidiDevice ctrl = (MidiDevice)(
+                        devices.get(device_num_ctl));
+                    if (!ctrl.isOpen()) {
+                        ctrl.open();
+                    }
+                    Transmitter trans = ctrl.getTransmitter();
+                    trans.setReceiver(recv);
+
+                    bridge.connect(
+                        (MidiDevice)(devices.get(device_num_in)),
+                        (MidiDevice)(devices.get(device_num_out)),
+                        recv);
                 } catch (MidiUnavailableException e) {
                     System.err.println(e.getMessage());
                     System.exit(0);

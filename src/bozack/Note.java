@@ -42,9 +42,9 @@ public final class Note {
     }
 
     public Note(int note) {
-        if (note < PITCH_SCALE) {
+        if (note < 0) {
             throw new IllegalArgumentException(
-                "too large note [" + note + "]");
+                "too small note [" + note + "]");
         }
         this.note  = note;
         this.octav = (note / PITCH_SCALE);
@@ -78,7 +78,8 @@ public final class Note {
             bozack.Note toneA = this.getOvertone(r);
             for (int q = 0; q < overtone; q++) {
                 bozack.Note toneB = target.getOvertone(q);
-                sum += toneA.getDessonance(toneB);
+                sum += overtone_velocity_ratio
+                    * toneA.getDessonance(toneB);
             }
         }
         return sum;
