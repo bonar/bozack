@@ -34,6 +34,7 @@ class StartFilter {
         System.out.println("3: (filter) scale minorize");
         System.out.println("4: (filter) safe interval");
         System.out.println("5: (filter) safe dessonance");
+        System.out.println("6: (filter) chord interval");
         int mode = readIntFromStdin("which mode: ");
 
         switch (mode) {
@@ -83,13 +84,13 @@ class StartFilter {
             case 5:
                 try {
                     DessonaceSafe recv = new DessonaceSafe();
-                    MidiDevice ctrl = (MidiDevice)(
+                    /* MidiDevice ctrl = (MidiDevice)(
                         devices.get(device_num_ctl));
                     if (!ctrl.isOpen()) {
                         ctrl.open();
                     }
                     Transmitter trans = ctrl.getTransmitter();
-                    trans.setReceiver(recv);
+                    trans.setReceiver(recv); */
 
                     bridge.connect(
                         (MidiDevice)(devices.get(device_num_in)),
@@ -100,7 +101,17 @@ class StartFilter {
                     System.exit(0);
                 }
                 break;
-
+            case 6:
+                try {
+                    bridge.connect(
+                        (MidiDevice)(devices.get(device_num_in)),
+                        (MidiDevice)(devices.get(device_num_out)),
+                        new ChordSafe());
+                } catch (MidiUnavailableException e) {
+                    System.err.println(e.getMessage());
+                    System.exit(0);
+                }
+                break;
             default:
                 System.exit(0);
         }
