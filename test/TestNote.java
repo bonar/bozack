@@ -18,12 +18,12 @@ public class TestNote {
         assertEquals(n1.getOctav(), 4);
     }
     @Test
-    public void pitch() {
+    public void chroma() {
         assertEquals(n1.getChroma(), 7);
     }
     @Test
     public void to_string() {
-        assertEquals(n1.toString(), "note=55 octav=4 pitch=7 G");
+        assertEquals(n1.toString(), "note=55 octav=4 chroma=7 G");
     }
     @Test
     public void constructWithChromaName() {

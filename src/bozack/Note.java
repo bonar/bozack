@@ -25,16 +25,16 @@ public final class Note {
 
     private static final float DEFAULT_OVERTONE_VELOCITY_RATIO = 0.88f;
 
-    private static final ChromaNameHash pitchName
+    private static final ChromaNameHash chromaName
         = Types.getChromaNameHash();
-    private static final ChromaNumHash pitchNum
+    private static final ChromaNumHash chromaNum
         = Types.getChromaNumHash();
 
     private static final int MAX_NOTE = 100;
 
     private final int note;
     private final int octav;
-    private final int pitch;
+    private final int chroma;
     private final BigDecimal freq;
 
     public static int getMaxNote() {
@@ -48,10 +48,10 @@ public final class Note {
         }
         this.note  = note;
         this.octav = (note / PITCH_SCALE);
-        this.pitch = note - (this.octav * PITCH_SCALE);
-        if (!pitchNum.containsKey(pitch)) {
+        this.chroma = note - (this.octav * PITCH_SCALE);
+        if (!chromaNum.containsKey(chroma)) {
             throw new IllegalArgumentException(
-                "invalid pitch [" + pitch + "]");
+                "invalid chroma [" + chroma + "]");
         }
 
         { // calculate frequency
@@ -63,7 +63,7 @@ public final class Note {
 
     public Note(ChromaName pn, int octav) {
         this((octav * PITCH_SCALE) + 
-            (Integer)pitchName.get(pn).intValue()
+            (Integer)chromaName.get(pn).intValue()
         );
     }
 
@@ -116,15 +116,15 @@ public final class Note {
 
     public int getNote()  { return this.note; }
     public int getOctav() { return this.octav; }
-    public int getChroma() { return this.pitch; }
+    public int getChroma() { return this.chroma; }
     public BigDecimal getFreq() { return this.freq; }
 
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("note="  + this.note  + " ");
         sb.append("octav=" + this.octav + " ");
-        sb.append("pitch=" + this.pitch + " ");
-        sb.append(pitchNum.get(this.pitch));
+        sb.append("chroma=" + this.chroma + " ");
+        sb.append(chromaNum.get(this.chroma));
         return sb.toString();
     }
 
