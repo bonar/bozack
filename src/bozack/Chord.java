@@ -2,7 +2,6 @@
 package bozack;
 
 import java.util.HashMap;
-import bozack.Types;
 import bozack.ChromaSet;
 import bozack.ChordType;
 
@@ -51,8 +50,6 @@ public class Chord {
 
     private static final ChordTypeHash chordTypeHash
         = getChordTypeHash();
-    private static final ChromaNameHash chromaNameHash
-        = bozack.Types.getChromaNameHash();
 
     private final ChromaName chromaName;
     private final ChordType  chordType;

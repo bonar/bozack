@@ -60,27 +60,23 @@ public final class ChordSafe
     private void moveChordCursor() {
         this.chordCursor++;
         int pattern = this.chordCursor % 4;
-        ChromaSet newChroma = new ChromaSet();
+        ChromaSet newChroma = null;
         switch (pattern) {
             case 0:
-                newChroma.add(new Integer(5));
-                newChroma.add(new Integer(9));
-                newChroma.add(new Integer(0));
+                Chord C = new Chord(ChromaName.C, ChordType.MAJOR);
+                newChroma = C.getChromaSet();
                 break;
             case 1:
-                newChroma.add(new Integer(7));
-                newChroma.add(new Integer(11));
-                newChroma.add(new Integer(2));
+                Chord Am = new Chord(ChromaName.A, ChordType.m);
+                newChroma = Am.getChromaSet();
                 break;
             case 2:
-                newChroma.add(new Integer(4));
-                newChroma.add(new Integer(8));
-                newChroma.add(new Integer(11));
+                Chord Dm = new Chord(ChromaName.D, ChordType.m);
+                newChroma = Dm.getChromaSet();
                 break;
             case 3:
-                newChroma.add(new Integer(9));
-                newChroma.add(new Integer(1));
-                newChroma.add(new Integer(4));
+                Chord G7 = new Chord(ChromaName.G, ChordType.SEVEN);
+                newChroma = G7.getChromaSet();
                 break;
         }
         this.chroma = newChroma;
