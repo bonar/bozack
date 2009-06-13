@@ -19,23 +19,23 @@ public class TestNote {
     }
     @Test
     public void pitch() {
-        assertEquals(n1.getPitch(), 7);
+        assertEquals(n1.getChroma(), 7);
     }
     @Test
     public void to_string() {
         assertEquals(n1.toString(), "note=55 octav=4 pitch=7 G");
     }
     @Test
-    public void constructWithPitchName() {
-        bozack.Note c5 = new bozack.Note(PitchName.C, 5);
+    public void constructWithChromaName() {
+        bozack.Note c5 = new bozack.Note(ChromaName.C, 5);
         assertNotNull(c5);
-        assertEquals(c5.getPitch(), 0);
+        assertEquals(c5.getChroma(), 0);
         assertEquals(c5.getNote(), 60);
         assertEquals(c5.getOctav(), 5);
 
-        bozack.Note af3 = new bozack.Note(PitchName.A_FLAT, 3);
+        bozack.Note af3 = new bozack.Note(ChromaName.A_FLAT, 3);
         assertNotNull(af3);
-        assertEquals(af3.getPitch(), 8);
+        assertEquals(af3.getChroma(), 8);
         assertEquals(af3.getNote(), 44);
         assertEquals(af3.getOctav(), 3);
     }
@@ -74,9 +74,9 @@ public class TestNote {
     }
     @Test
     public void frequencyCalc() {
-        bozack.Note a4 = new bozack.Note(PitchName.A, 4);
-        bozack.Note a5 = new bozack.Note(PitchName.A, 5);
-        bozack.Note a6 = new bozack.Note(PitchName.A, 6);
+        bozack.Note a4 = new bozack.Note(ChromaName.A, 4);
+        bozack.Note a5 = new bozack.Note(ChromaName.A, 5);
+        bozack.Note a6 = new bozack.Note(ChromaName.A, 6);
 
         assertEquals(a4.getFreq().intValue(), 220);
         assertEquals(a5.getFreq().intValue(), 440);

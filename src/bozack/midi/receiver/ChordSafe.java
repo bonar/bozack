@@ -4,7 +4,7 @@ package bozack.midi.receiver;
 import bozack.midi.receiver.CustomReceiver;
 import bozack.Note;
 import bozack.NoteSet;
-import bozack.PitchSet;
+import bozack.ChromaSet;
 import bozack.controller.ChordInterval;
 import javax.sound.midi.*;
 import java.util.Iterator;
@@ -12,7 +12,7 @@ import java.util.Iterator;
 public final class ChordSafe
     extends CustomReceiver {
 
-    private PitchSet chroma = new PitchSet();
+    private ChromaSet chroma = new ChromaSet();
     private NoteSet innerOnNote = new NoteSet();
     private int chordCursor = 0;
 
@@ -59,7 +59,7 @@ public final class ChordSafe
     private void moveChordCursor() {
         this.chordCursor++;
         int pattern = this.chordCursor % 4;
-        PitchSet newChroma = new PitchSet();
+        ChromaSet newChroma = new ChromaSet();
         switch (pattern) {
             case 0:
                 newChroma.add(new Integer(5));
@@ -86,7 +86,7 @@ public final class ChordSafe
     }
 
     private Note pickupNote(Note note) {
-        PitchSet largeChroma = new PitchSet();
+        ChromaSet largeChroma = new ChromaSet();
         Iterator iter = this.chroma.iterator();
         while (iter.hasNext()) {
             int chroma = (Integer)iter.next();
@@ -103,7 +103,7 @@ public final class ChordSafe
         
         for (int i = note.getNote(); i > 12; i++) {
             Note targetNote = new Note(i);
-            if (largeChroma.contains(targetNote.getPitch())
+            if (largeChroma.contains(targetNote.getChroma())
                 && !this.innerOnNote.contains(targetNote)) {
                 return targetNote;
             }
@@ -114,7 +114,7 @@ public final class ChordSafe
     private Note pickupChord(Note note) {
         for (int i = note.getNote(); i > 12; i--) {
             Note targetNote = new Note(i);
-            if (this.chroma.contains(targetNote.getPitch())
+            if (this.chroma.contains(targetNote.getChroma())
                 && !this.innerOnNote.contains(targetNote)) {
                 this.innerOnNote.add(targetNote);
                 return targetNote;

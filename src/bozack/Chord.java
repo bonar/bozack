@@ -8,18 +8,18 @@ public class Chord {
     private static SpanTypeHash spanTypeHash
         = bozack.Types.getSpanTypeHash();
 
-    private PitchName pitchName;
+    private ChromaName chromaName;
     private SpanType spanType;
     private NoteHop noteHop;
 
-    public Chord(PitchName pitch, SpanType span) {
-        this.pitchName = pitch;
-        this.spanType  = span;
-        this.noteHop   = spanTypeHash.get(span);
+    public Chord(ChromaName chroma, SpanType span) {
+        this.chromaName = chroma;
+        this.spanType   = span;
+        this.noteHop    = spanTypeHash.get(span);
     }
 
-    public PitchName getPitchName() {
-        return this.pitchName;
+    public ChromaName getChromaName() {
+        return this.chromaName;
     }
 
     public SpanType getSpanType() {

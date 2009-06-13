@@ -25,10 +25,10 @@ public final class Note {
 
     private static final float DEFAULT_OVERTONE_VELOCITY_RATIO = 0.88f;
 
-    private static final PitchNameHash pitchName
-        = Types.getPitchNameHash();
-    private static final PitchNumHash pitchNum
-        = Types.getPitchNumHash();
+    private static final ChromaNameHash pitchName
+        = Types.getChromaNameHash();
+    private static final ChromaNumHash pitchNum
+        = Types.getChromaNumHash();
 
     private static final int MAX_NOTE = 100;
 
@@ -61,7 +61,7 @@ public final class Note {
         }
     }
 
-    public Note(PitchName pn, int octav) {
+    public Note(ChromaName pn, int octav) {
         this((octav * PITCH_SCALE) + 
             (Integer)pitchName.get(pn).intValue()
         );
@@ -116,7 +116,7 @@ public final class Note {
 
     public int getNote()  { return this.note; }
     public int getOctav() { return this.octav; }
-    public int getPitch() { return this.pitch; }
+    public int getChroma() { return this.pitch; }
     public BigDecimal getFreq() { return this.freq; }
 
     public String toString() {

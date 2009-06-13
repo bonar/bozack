@@ -9,8 +9,8 @@ public class TestChord {
 
     @Test
     public void basic() {
-        Chord Em = new bozack.Chord(PitchName.E, SpanType.ST_m);
-        assertEquals(Em.getPitchName(), PitchName.E);
+        Chord Em = new bozack.Chord(ChromaName.E, SpanType.ST_m);
+        assertEquals(Em.getChromaName(), ChromaName.E);
         assertEquals(Em.getSpanType(), SpanType.ST_m);
 
         NoteHop hop = Em.getNoteHop();
