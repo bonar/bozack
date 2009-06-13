@@ -4,6 +4,9 @@ package bozack.midi.receiver;
 import bozack.midi.receiver.CustomReceiver;
 import bozack.Note;
 import bozack.NoteSet;
+import bozack.ChromaName;
+import bozack.ChordType;
+import bozack.Chord;
 import bozack.ChromaSet;
 import bozack.controller.ChordInterval;
 import javax.sound.midi.*;
@@ -17,10 +20,8 @@ public final class ChordSafe
     private int chordCursor = 0;
 
     public ChordSafe() {
-        System.out.println("constructor");
-        this.chroma.add(new Integer(0));
-        this.chroma.add(new Integer(4));
-        this.chroma.add(new Integer(7));
+        Chord C = new Chord(ChromaName.C, ChordType.MAJOR);
+        this.chroma = C.getChromaSet();
     }
 
     protected void handleShortMessage(ShortMessage sm, long timeStamp) {

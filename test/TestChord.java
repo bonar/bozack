@@ -10,9 +10,9 @@ public class TestChord {
 
     @Test
     public void basic() {
-        Chord Em = new bozack.Chord(ChromaName.E, SpanType.ST_m);
+        Chord Em = new bozack.Chord(ChromaName.E, ChordType.m);
         assertEquals(Em.getChromaName(), ChromaName.E);
-        assertEquals(Em.getSpanType(), SpanType.ST_m);
+        assertEquals(Em.getChordType(), ChordType.m);
 
         NoteHop hop = Em.getNoteHop();
         int[] hopint = hop.getHop();
@@ -22,7 +22,7 @@ public class TestChord {
     }
     @Test
     public void chromaSet() {
-        Chord CM = new bozack.Chord(ChromaName.C, SpanType.ST_MAJOR);
+        Chord CM = new bozack.Chord(ChromaName.C, ChordType.MAJOR);
         ChromaSet set = CM.getChromaSet();
 
         ChromaNameHash chromaName = bozack.Types.getChromaNameHash();
