@@ -4,6 +4,7 @@
     <classes>
       <class name="bozack.TestNote"></class>
       <class name="bozack.TestSafeInterval"></class>
+      <class name="bozack.TestChord"></class>
     </classes>
   </test>
 </suite>

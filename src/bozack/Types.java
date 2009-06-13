@@ -21,25 +21,34 @@ final class PitchNameHash extends HashMap<PitchName, Integer> {}
 final class PitchNumHash  extends HashMap<Integer, PitchName> {}
 
 enum SpanType {
-    ST_PLAIN,
+    ST_MAJOR,
     ST_m,
-    ST_M,
     ST_7,
     ST_m7,
+    ST_M7,
 }
 
 /**
- * NoteSpan is used to represent distance from the Note to 
+ * NoteHop is used to represent distance from the Note to 
  * another Note in some Chord
  */
-final class NoteSpan {
-    private final int[] span;
+final class NoteHop {
+    private int[] span = new int[4];
 
-    NoteSpan(int[] span) {
-        this.span = span;
+    NoteHop(int a, int b, int c) {
+        this.span[0] = a;
+        this.span[1] = b;
+        this.span[2] = c;
     }
 
-    public int[] getSpan() {
+    NoteHop(int a, int b, int c, int d) {
+        this.span[0] = a;
+        this.span[1] = b;
+        this.span[2] = c;
+        this.span[3] = d;
+    }
+
+    public int[] getHop() {
         return this.span;
     }
 }
@@ -48,11 +57,21 @@ final class NoteSpan {
  * ScanType String to IntegerArray
  * @see bozack.Chord
  */
-final class SpanTypeMap extends HashMap<SpanType, NoteSpan> {}
+final class SpanTypeHash extends HashMap<SpanType, NoteHop> {}
 
 public final class Types {
     // not to create instance
     private Types() {}
+
+    public static SpanTypeHash getSpanTypeHash() {
+        SpanTypeHash m = new SpanTypeHash();
+        m.put(SpanType.ST_MAJOR, new NoteHop(0, 4, 7));
+        m.put(SpanType.ST_m,     new NoteHop(0, 3, 7));
+        m.put(SpanType.ST_7,     new NoteHop(0, 4, 7, 10));
+        m.put(SpanType.ST_m7,    new NoteHop(0, 3, 7, 10));
+        m.put(SpanType.ST_M7,    new NoteHop(0, 4, 7, 11));
+        return m;
+    }
 
     public static PitchNameHash getPitchNameHash() {
         PitchNameHash m = new PitchNameHash();
@@ -96,18 +115,6 @@ public final class Types {
         n.put(11, PitchName.B);
         return n;
     }
-
-    public static SpanTypeMap getSpanTypeMap() {
-        SpanTypeMap s = new SpanTypeMap();
-        s.put(SpanType.ST_PLAIN, new NoteSpan(new int[] {0, 4, 7}));
-        s.put(SpanType.ST_M,     new NoteSpan(new int[] {0, 4, 7}));
-        s.put(SpanType.ST_m,     new NoteSpan(new int[] {0, 3, 7}));
-        s.put(SpanType.ST_m7,    new NoteSpan(new int[] {0, 3, 7, 10}));
-        s.put(SpanType.ST_7,     new NoteSpan(new int[] {0, 4, 7, 10}));
-        return s;
-    }
-
- 
 
 }
 
