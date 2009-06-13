@@ -20,8 +20,8 @@ public final class ChordSafe
     private int chordCursor = 0;
 
     public ChordSafe() {
-        Chord C = new Chord(ChromaName.C, ChordType.MAJOR);
-        this.chroma = C.getChromaSet();
+        Chord c = new Chord(ChromaName.F, ChordType.MAJOR);
+        this.chroma = c.getChromaSet();
     }
 
     protected void handleShortMessage(ShortMessage sm, long timeStamp) {
@@ -51,6 +51,7 @@ public final class ChordSafe
                 break;
             case ShortMessage.CONTROL_CHANGE:
                 if (sm.getData1() == 67 && sm.getData2() == 127) {
+                    System.out.println("Code shift");
                     this.moveChordCursor();
                 }
                 break;
@@ -63,20 +64,20 @@ public final class ChordSafe
         ChromaSet newChroma = null;
         switch (pattern) {
             case 0:
-                Chord C = new Chord(ChromaName.C, ChordType.MAJOR);
-                newChroma = C.getChromaSet();
+                Chord c0 = new Chord(ChromaName.F, ChordType.MAJOR);
+                newChroma = c0.getChromaSet();
                 break;
             case 1:
-                Chord Am = new Chord(ChromaName.A, ChordType.m);
-                newChroma = Am.getChromaSet();
+                Chord c1 = new Chord(ChromaName.C, ChordType.MAJOR);
+                newChroma = c1.getChromaSet();
                 break;
             case 2:
-                Chord Dm = new Chord(ChromaName.D, ChordType.m);
-                newChroma = Dm.getChromaSet();
+                Chord c2 = new Chord(ChromaName.G, ChordType.MAJOR);
+                newChroma = c2.getChromaSet();
                 break;
             case 3:
-                Chord G7 = new Chord(ChromaName.G, ChordType.SEVEN);
-                newChroma = G7.getChromaSet();
+                Chord c3 = new Chord(ChromaName.A, ChordType.MAJOR);
+                newChroma = c3.getChromaSet();
                 break;
         }
         this.chroma = newChroma;

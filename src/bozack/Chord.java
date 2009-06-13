@@ -4,6 +4,7 @@ package bozack;
 import java.util.HashMap;
 import bozack.ChromaSet;
 import bozack.ChordType;
+import bozack.Types;;
 
 /**
  * NoteHop is used to represent distance from the Note to 
@@ -50,6 +51,8 @@ public class Chord {
 
     private static final ChordTypeHash chordTypeHash
         = getChordTypeHash();
+    private static final ChromaNameHash chromaNameHash
+        = bozack.Types.getChromaNameHash();
 
     private final ChromaName chromaName;
     private final ChordType  chordType;
@@ -61,10 +64,11 @@ public class Chord {
         this.chordType  = type;
         this.noteHop    = chordTypeHash.get(type);
 
+        int root = chromaNameHash.get(chroma);
         int[] hops = this.noteHop.getHop();
         ChromaSet chromas = new ChromaSet();
         for (int i = 0; i < hops.length; i++) {
-            int c = hops[i];
+            int c = root + hops[i];
             c = c >= 12 ? (c - 12) : c;
             chromas.add(new Integer(c));
         }
