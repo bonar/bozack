@@ -7,21 +7,21 @@ import bozack.NoteSet;
 import bozack.ChromaName;
 import bozack.ChordType;
 import bozack.Chord;
+import bozack.ChordProgression;
 import bozack.ChromaSet;
-import bozack.controller.ChordInterval;
 import javax.sound.midi.*;
 import java.util.Iterator;
 
 public final class ChordSafe
     extends CustomReceiver {
 
-    private ChromaSet chroma = new ChromaSet();
-    private NoteSet innerOnNote = new NoteSet();
+    private ChromaSet chroma           = new ChromaSet();
+    private ChordProgression chordProg = new ChordProgression();
+    private NoteSet innerOnNote        = new NoteSet();
     private int chordCursor = 0;
 
     public ChordSafe() {
-        Chord c = new Chord(ChromaName.F, ChordType.MAJOR);
-        this.chroma = c.getChromaSet();
+        this.chroma = this.chordProg.getChord().getChromaSet();
     }
 
     protected void handleShortMessage(ShortMessage sm, long timeStamp) {
@@ -51,36 +51,17 @@ public final class ChordSafe
                 break;
             case ShortMessage.CONTROL_CHANGE:
                 if (sm.getData1() == 67 && sm.getData2() == 127) {
-                    System.out.println("Code shift");
-                    this.moveChordCursor();
+                    this.chordProg.next();
+                    this.chroma = this.chordProg
+                        .getChord().getChromaSet();
+                }
+                if (sm.getData1() == 68 && sm.getData2() == 127) {
+                    this.chordProg.variate();
+                    this.chroma = this.chordProg
+                        .getChord().getChromaSet();
                 }
                 break;
         }
-    }
-
-    private void moveChordCursor() {
-        this.chordCursor++;
-        int pattern = this.chordCursor % 4;
-        ChromaSet newChroma = null;
-        switch (pattern) {
-            case 0:
-                Chord c0 = new Chord(ChromaName.F, ChordType.MAJOR);
-                newChroma = c0.getChromaSet();
-                break;
-            case 1:
-                Chord c1 = new Chord(ChromaName.C, ChordType.MAJOR);
-                newChroma = c1.getChromaSet();
-                break;
-            case 2:
-                Chord c2 = new Chord(ChromaName.G, ChordType.MAJOR);
-                newChroma = c2.getChromaSet();
-                break;
-            case 3:
-                Chord c3 = new Chord(ChromaName.A, ChordType.MAJOR);
-                newChroma = c3.getChromaSet();
-                break;
-        }
-        this.chroma = newChroma;
     }
 
     private Note pickupNote(Note note) {
