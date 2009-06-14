@@ -1,10 +1,12 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
-<suite name="bozack test suite" thread-count="1" parallel="tests">
+<suite name="bozack test suite" thread-count="1" parallel="tests" verbose="2">
   <test name="note">
     <classes>
       <class name="bozack.TestNote"></class>
       <class name="bozack.TestSafeInterval"></class>
       <class name="bozack.TestChord"></class>
+      <class name="bozack.TestChordRole"></class>
+      <class name="bozack.TestChordProgression"></class>
     </classes>
   </test>
 </suite>

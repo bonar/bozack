@@ -79,5 +79,25 @@ public class Chord {
     public ChordType  getChordType()  { return this.chordType; }
     public NoteHop    getNoteHop()    { return this.noteHop; }
     public ChromaSet  getChromaSet()  { return this.chromaSet; }
+
+
+    public String toString() {
+        return "Chord:" + this.chromaName
+            + "(" + this.chordType + ")";
+    }
+
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj instanceof Chord) {
+            Chord target = (Chord)obj;
+            if (   this.getChromaName() == target.getChromaName()
+                && this.getChordType()  == target.getChordType()) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
 
