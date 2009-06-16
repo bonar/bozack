@@ -23,7 +23,7 @@ public final class Note {
     private static final double PLTHEORY_ALPHA_3 = 4.00d;
     private static final double PLTHEORY_BETA    = 1.25d;
 
-    private static final float DEFAULT_OVERTONE_VELOCITY_RATIO = 0.88f;
+    private static final double DEFAULT_OVERTONE_VELOCITY_RATIO = 0.88f;
 
     private static final ChromaNameHash chromaName
         = Types.getChromaNameHash();
@@ -72,14 +72,20 @@ public final class Note {
             , DEFAULT_OVERTONE_VELOCITY_RATIO);
     }
     public double getDessonance(bozack.Note target
-        , int overtone, float overtone_velocity_ratio) {
+        , int overtone, double overtone_velocity_ratio) {
         double sum = 0.0d;
         for (int r = 0; r < overtone; r++) {
             bozack.Note toneA = this.getOvertone(r);
             for (int q = 0; q < overtone; q++) {
                 bozack.Note toneB = target.getOvertone(q);
-                sum += overtone_velocity_ratio
-                    * toneA.getDessonance(toneB);
+                double velocity = Math.pow(overtone_velocity_ratio, q);
+                double des = toneA.getDessonance(toneB);
+                sum += velocity * des;
+                System.out.println(
+                    toneA + " vs " + toneB
+                    + " / " + "des:" + des 
+                    + " / " + "velocity:" + velocity 
+                    );
             }
         }
         return sum;
@@ -97,7 +103,7 @@ public final class Note {
     }
     public static double getDessonance(
         bozack.Note noteA, bozack.Note noteB) {
-        double notediff = noteB.getNote() - noteA.getNote();
+        double notediff = (double)(noteB.getNote() - noteA.getNote());
         double exp1 = Math.exp(-1.0d * PLTHEORY_ALPHA_1 
             * Math.pow(notediff, PLTHEORY_BETA));
         double exp2 = Math.exp(-1.0d * PLTHEORY_ALPHA_2 
