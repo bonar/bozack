@@ -78,9 +78,9 @@ public class TestNote {
         bozack.Note a5 = new bozack.Note(ChromaName.A, 5);
         bozack.Note a6 = new bozack.Note(ChromaName.A, 6);
 
-        assertEquals(a4.getFreq().intValue(), 220);
-        assertEquals(a5.getFreq().intValue(), 440);
-        assertEquals(a6.getFreq().intValue(), 880);
+        assertEquals((int)a4.getFreq(), 220);
+        assertEquals((int)a5.getFreq(), 440);
+        assertEquals((int)a6.getFreq(), 880);
     }
     @Test
     public void dossonanceVariation() {
