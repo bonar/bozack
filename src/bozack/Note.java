@@ -22,6 +22,7 @@ public final class Note {
     private static final double PLTHEORY_BETA    = 1.25d;
 
     private static final double DEFAULT_OVERTONE_VELOCITY_RATIO = 0.88f;
+    private static final int    DEFAULT_OVERTONES = 5;
 
     private static final ChromaNameHash chromaName
         = Types.getChromaNameHash();
@@ -65,27 +66,7 @@ public final class Note {
         );
     }
 
-    public double getDessonance(bozack.Note target, int overtone) {
-        return this.getDessonance(target, overtone
-            , DEFAULT_OVERTONE_VELOCITY_RATIO);
-    }
-    public double getDessonance(bozack.Note target
-        , int overtone, double overtone_velocity_ratio) {
-        double sum = 0.0d;
-        for (int r = 0; r < overtone; r++) {
-            bozack.Note toneA = this.getOvertone(r);
-            for (int q = 0; q < overtone; q++) {
-                double velocity = 
-                      Math.pow(overtone_velocity_ratio, q)
-                    * Math.pow(overtone_velocity_ratio, r);
-                bozack.Note toneB = target.getOvertone(q);
-                double des = toneA.getDessonance(toneB);
-                sum += velocity * des;
-            }
-        }
-        return sum;
-    }
-    public double getDessonance(bozack.Note target) {
+    public double getDessonance(Note target) {
         if (this.getNote() == target.getNote()) {
             return 0.0d;
         }
@@ -96,25 +77,45 @@ public final class Note {
             return getDessonance(this, target);
         }
     }
-    public static double getDessonance(
-        bozack.Note noteA, bozack.Note noteB) {
-        double noteRatio = Math.abs(39.863d 
-            * Math.log10(noteB.getFreq() / noteA.getFreq()));
-        double exp1 = Math.exp(-1.0d * PLTHEORY_ALPHA_1 
-            * Math.pow(noteRatio, PLTHEORY_BETA));
-        double exp2 = Math.exp(-1.0d * PLTHEORY_ALPHA_2 
-            * Math.pow(noteRatio, PLTHEORY_BETA));
-        double dissonance = PLTHEORY_ALPHA_3 * (exp1 - exp2);
-        return dissonance;
+
+    public static double getDessonance (Note smaller, Note bigger) {
+        return getDessonance(
+            smaller, DEFAULT_OVERTONE_VELOCITY_RATIO,
+            bigger, DEFAULT_OVERTONE_VELOCITY_RATIO,
+            DEFAULT_OVERTONES);
     }
 
-    public Note getOvertone(int index) {
-        int new_note = this.getNote() + (index * PITCH_SCALE);
-        if (new_note < PITCH_SCALE) {
-            return null;
+    public static double getDessonance (
+        Note smaller, double smallerVelocity,
+        Note bigger,  double biggerVelocity,
+        int overtones) {
+
+        double base_freq   = smaller.getFreq();
+        double target_freq = bigger.getFreq();
+
+        double sum = 0.0d;
+        for (int p = 0; p < overtones; p++) {
+            double overtoneP = base_freq * (p + 1);
+            for (int q = 0; q < overtones; q++) {
+                double overtoneQ = target_freq * (q + 1);
+                double amp = Math.pow(smallerVelocity, p)
+                    * Math.pow(biggerVelocity, q);
+
+                double x12 = Math.abs(39.863d * Math.log10(
+                    overtoneQ / overtoneP));
+                double d12 = amp * PLTHEORY_ALPHA_3 * (
+                    Math.exp(-1.0d * PLTHEORY_ALPHA_1 
+                    * Math.pow(x12, PLTHEORY_BETA)) -
+                    Math.exp(-1.0d * PLTHEORY_ALPHA_2 
+                    * Math.pow(x12, PLTHEORY_BETA))
+                );
+                sum += d12;
+            }
         }
-        return new Note(new_note);
+        return (sum / 2);
     }
+
+
 
     public int getNote()  { return this.note; }
     public int getOctav() { return this.octav; }

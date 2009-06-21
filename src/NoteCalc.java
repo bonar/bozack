@@ -11,7 +11,7 @@ class NoteCalc {
         int cNote = C.getNote();
         for (int i = cNote; i < (cNote + 15); i++) {
             Note target = new Note(i);
-            double des = C.getDessonance(target, 5, 0.88d);
+            double des = C.getDessonance(target);
             System.out.println(des + " : " + target);
 
         }

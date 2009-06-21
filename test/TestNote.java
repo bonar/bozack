@@ -98,30 +98,11 @@ public class TestNote {
         bozack.Note base = new bozack.Note(48);
         for (int i = 0; i < 12; i++) {
             bozack.Note target = new bozack.Note(48 + i);
-            double des = base.getDessonance(target, 5);
+            double des = base.getDessonance(target);
             assertNotNull(des);
             System.out.printf("(ot) %d:%2.5f (%s)\n"
                 , target.getNote(), des, target.toString());
         }
-    }
-    @Test
-    public void overtones() {
-        bozack.Note note = new bozack.Note(50);
-
-        bozack.Note note_ot1 = note.getOvertone(1);
-        assertEquals(note_ot1.getNote()
-            , 50 + (bozack.Note.PITCH_SCALE * 1));
-
-        bozack.Note note_ot2 = note.getOvertone(2);
-        assertEquals(note_ot2.getNote()
-            , 50 + (bozack.Note.PITCH_SCALE * 2));
-
-        bozack.Note note_ot3 = note.getOvertone(-1);
-        assertEquals(note_ot3.getNote()
-            , 50 + (bozack.Note.PITCH_SCALE * -1));
-
-        bozack.Note note_ot4 = note.getOvertone(-5);
-        assertNull(note_ot4);
     }
 }
 
