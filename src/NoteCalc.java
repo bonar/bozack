@@ -9,7 +9,7 @@ class NoteCalc {
 
         Note C = new Note(ChromaName.C, 5);
         int cNote = C.getNote();
-        for (int i = cNote; i < (cNote + 15); i++) {
+        for (int i = 12; i < (12 * 8); i++) {
             Note target = new Note(i);
             double des = C.getDessonance(target);
             System.out.println(des + " : " + target);

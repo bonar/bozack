@@ -126,7 +126,6 @@ public final class Note {
         StringBuilder sb = new StringBuilder();
         sb.append("note="  + this.note  + " ");
         sb.append("octav=" + this.octav + " ");
-        sb.append("chroma=" + this.chroma + " ");
         sb.append(chromaNum.get(this.chroma));
         return sb.toString();
     }
