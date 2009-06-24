@@ -27,6 +27,10 @@
     <java classname="NoteCalc" classpath="classes" fork="yes"/>
   </target>
 
+  <target name="paint" depends="compile">
+    <java classname="PaintTest" classpath="classes" fork="yes"/>
+  </target>
+
   <!-- test -->
   <taskdef 
     resource="testngtasks" 

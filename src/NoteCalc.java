@@ -1,6 +1,7 @@
 
 import bozack.Note;
 import bozack.ChromaName;
+import java.text.DecimalFormat;
 
 class NoteCalc {
 
@@ -12,7 +13,8 @@ class NoteCalc {
         for (int i = 12; i < (12 * 8); i++) {
             Note target = new Note(i);
             double des = C.getDessonance(target);
-            System.out.println(des + " : " + target);
+            String desStr = new DecimalFormat("##0.0000").format(des);
+            System.out.println(desStr + " : " + target);
 
         }
     }

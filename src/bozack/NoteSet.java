@@ -5,7 +5,8 @@ import bozack.Note;
 import java.util.LinkedHashSet;
 import java.util.Iterator;
 
-public final class NoteSet extends LinkedHashSet<Note> {
+public final class NoteSet extends LinkedHashSet<Note> 
+    implements Cloneable {
 
     public double getDessonance() {
         double des = 0.0d;
@@ -22,5 +23,8 @@ public final class NoteSet extends LinkedHashSet<Note> {
         return des;
     }
 
+    public Object clone() {
+        return super.clone();
+    }
 }
 
