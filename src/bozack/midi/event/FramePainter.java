@@ -14,12 +14,13 @@ public class FramePainter implements NoteEventListener {
     }
 
     public void performOnNote(Note onNote, NoteSet pressedNotes) {
-        System.out.println("FramePainter: ON " + onNote.toString());
-    
+        this.frame.paintKeyPanel(pressedNotes);
+        System.out.println("NoteEventListener ON");
     }
     
     public void  performOffNote(Note offNote, NoteSet pressedNotes) {
-        System.out.println("FramePainter: OFF " + offNote.toString());
+        this.frame.paintKeyPanel(pressedNotes);
+        System.out.println("NoteEventListener OFF");
 
     }
 }

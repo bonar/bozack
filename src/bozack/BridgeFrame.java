@@ -13,7 +13,7 @@ public final class BridgeFrame extends JFrame {
 
     private static final int POS_X  = 60;
     private static final int POS_Y  = 10;
-    private static final int WIDTH  = 1000;
+    private static final int WIDTH  = 1100;
     private static final int HEIGHT = 250;
 
     private static NoteSet noteSet = null;
@@ -29,7 +29,11 @@ public final class BridgeFrame extends JFrame {
         Container contentPane = this.getContentPane();
         this.noteSet = ns;
         KeyPanel kp = new KeyPanel(this.noteSet);
+        try {
+            contentPane.remove(IDX_COMP_KEYPANEL);
+        } catch (Exception e) { }
         contentPane.add(kp, IDX_COMP_KEYPANEL);
+        contentPane.validate();
     }
 }
 
@@ -38,14 +42,14 @@ class KeyPanel extends JPanel {
     private static final int WIDTH  = 950;
     private static final int HEIGHT = 220;
 
-    private static final int KEY_WIDTH  = 20;
-    private static final int KEY_HEIGHT = 60;
+    private static final int KEY_WIDTH  = 24;
+    private static final int KEY_HEIGHT = 70;
 
     private static int NOTE_START = 12;
     private static int NOTE_END   = 84;
 
     private static final Font FONT_KB_LETTER
-        = new Font("Serif", Font.PLAIN, 8);
+        = new Font("Serif", Font.PLAIN, 12);
 
     private final NoteSet noteSet;
 
@@ -84,7 +88,7 @@ class KeyPanel extends JPanel {
                 tmpNoteSet.add(cursorNote);
                 double des = tmpNoteSet.getDessonance();
                 int desIndex = 255 - (int)(255.0d 
-                    * (des / (tmpNoteSet.size() * 3)));
+                    * (des / (tmpNoteSet.size() * 5)));
                 if (desIndex < 0) {
                     desIndex = 0;
                 }
@@ -98,7 +102,10 @@ class KeyPanel extends JPanel {
             }
             g.setColor(Color.black);
             g.drawRect(x, y, KEY_WIDTH, KEY_HEIGHT);
-            g.drawString(String.valueOf(note), (x + 4), (y + 10));
+            g.drawString(String.valueOf(note), (x + 6), (y + 15));
+            if (0 == chroma) {
+                g.drawString("C", (x + 7), (y + 35));
+            }
             if (isHalfTone) {
                 x -= (KEY_WIDTH / 2);
             }
