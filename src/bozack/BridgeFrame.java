@@ -1,24 +1,35 @@
 
-package bozack.graph;
+package bozack;
 
 import bozack.Note;
 import bozack.NoteSet;
 import javax.swing.*;
+import java.awt.Container;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Font;
 
-public final class PianoPainter extends JFrame {
+public final class BridgeFrame extends JFrame {
 
     private static final int POS_X  = 60;
     private static final int POS_Y  = 10;
     private static final int WIDTH  = 1000;
     private static final int HEIGHT = 250;
 
-    public void paintPiano (NoteSet ns) {
+    private static NoteSet noteSet = null;
+
+    private static int IDX_COMP_KEYPANEL = 0;
+
+    public BridgeFrame() {
         this.setBounds(POS_X, POS_Y, WIDTH, HEIGHT);
-        this.getContentPane().add(new KeyPanel(ns));
         this.setVisible(true);
+    }
+
+    public void paintKeyPanel (NoteSet ns) {
+        Container contentPane = this.getContentPane();
+        this.noteSet = ns;
+        KeyPanel kp = new KeyPanel(this.noteSet);
+        contentPane.add(kp, IDX_COMP_KEYPANEL);
     }
 }
 
@@ -30,7 +41,7 @@ class KeyPanel extends JPanel {
     private static final int KEY_WIDTH  = 20;
     private static final int KEY_HEIGHT = 60;
 
-    private static int NOTE_START = 24;
+    private static int NOTE_START = 12;
     private static int NOTE_END   = 84;
 
     private static final Font FONT_KB_LETTER
@@ -81,7 +92,6 @@ class KeyPanel extends JPanel {
                     desIndex = 255;
                 }
 
-                System.out.println("note:" + note + " / des=" + des + " / desIndex=" + desIndex);
                 Color heatColor = new Color(255, desIndex, desIndex);
                 g.setColor(heatColor);
                 g.fillRect(x, y, KEY_WIDTH, KEY_HEIGHT);
