@@ -27,6 +27,10 @@
     <java classname="NoteCalc" classpath="classes" fork="yes"/>
   </target>
 
+  <target name="jack" depends="compile">
+    <java classname="JackInstrument" classpath="classes" fork="yes"/>
+  </target>
+
   <!-- test -->
   <taskdef 
     resource="testngtasks" 

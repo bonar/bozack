@@ -1,10 +1,13 @@
 
 package bozack.midi.receiver;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import javax.sound.midi.*;
 import bozack.Note;
 import bozack.NoteSet;
 import bozack.NoteList;
+import bozack.midi.event.NoteEventListener;
 
 public class CustomReceiver
     implements javax.sound.midi.Receiver {
@@ -13,6 +16,13 @@ public class CustomReceiver
     protected MidiChannel defaultChannel;
     protected NoteSet onNote;
     protected NoteList onNoteHistory;
+
+    private ArrayList<NoteEventListener> noteEventListeners
+        = new ArrayList<NoteEventListener>();
+    private enum NOTE_EVENT {
+        ON,
+        OFF
+    };
 
     public CustomReceiver() {
         this.onNote        = new NoteSet();
@@ -58,6 +68,17 @@ public class CustomReceiver
             ShortMessage sm = ((ShortMessage)message);
             this.updateOnNoteSet(sm);
             this.handleShortMessage(sm, timeStamp);
+
+            switch(sm.getCommand()) {
+                case ShortMessage.NOTE_ON:
+                    this.performNoteEvent(new Note(sm.getData1())
+                        , NOTE_EVENT.ON);
+                    break;
+                case ShortMessage.NOTE_OFF:
+                    this.performNoteEvent(new Note(sm.getData1())
+                        , NOTE_EVENT.OFF);
+                    break;
+            }
             return;
         }
         this.handleMessage(message, timeStamp);
@@ -89,6 +110,28 @@ public class CustomReceiver
         ShortMessage message, long timeStamp) { 
         System.out.println("parent method"); }
     public void close() { }
+
+    public void addNoteEventListener(NoteEventListener listener) {
+        this.noteEventListeners.add(listener);
+    }
+
+    private void performNoteEvent(Note lastNote, NOTE_EVENT type) {
+        if (0 == this.noteEventListeners.size()) {
+            return;
+        }
+        Iterator iter = this.noteEventListeners.iterator();
+        while (iter.hasNext()) {
+            NoteEventListener listener
+                = (NoteEventListener)iter.next();
+            if (type == NOTE_EVENT.ON) {
+                listener.performOnNote(lastNote, this.onNote);
+            }
+            else {
+                listener.performOffNote(lastNote, this.onNote);
+            }
+
+        }
+    }
 }
 
 
