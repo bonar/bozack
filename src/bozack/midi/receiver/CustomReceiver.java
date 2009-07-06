@@ -15,6 +15,7 @@ public class CustomReceiver
     protected Synthesizer synth;
     protected MidiChannel defaultChannel;
     protected NoteSet onNote;
+    protected NoteSet assistedOnNote;
     protected NoteList onNoteHistory;
 
     private ArrayList<NoteEventListener> noteEventListeners
@@ -25,8 +26,9 @@ public class CustomReceiver
     };
 
     public CustomReceiver() {
-        this.onNote        = new NoteSet();
-        this.onNoteHistory = new NoteList();
+        this.onNote         = new NoteSet();
+        this.assistedOnNote = new NoteSet();
+        this.onNoteHistory  = new NoteList();
     }
 
     public void setSynth(MidiDevice device) {

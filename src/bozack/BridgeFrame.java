@@ -25,11 +25,15 @@ public final class BridgeFrame extends JFrame {
         this.setBounds(POS_X, POS_Y, WIDTH, HEIGHT);
         this.setVisible(true);
     }
+    
+    public void paintKeyPanel (NoteSet onNote) {
+        this.paintKeyPanel(onNote, new NoteSet());
+    }
 
-    public void paintKeyPanel (NoteSet ns) {
+    public void paintKeyPanel (NoteSet onNote, NoteSet assistedNote) {
         Container contentPane = this.getContentPane();
-        this.noteSet = ns;
-        KeyPanel kp = new KeyPanel(this.noteSet);
+        this.noteSet = onNote;
+        KeyPanel kp = new KeyPanel(this.noteSet, assistedNote);
         try {
             contentPane.remove(IDX_COMP_KEYPANEL);
         } catch (Exception e) { }
@@ -53,10 +57,11 @@ class KeyPanel extends JPanel {
         = new Font("Serif", Font.PLAIN, 12);
 
     private final NoteSet noteSet;
-    private final Note lastAssistedNote;
+    private final NoteSet assistedNote;
 
-    public KeyPanel(NoteSet ns) {
-        this.noteSet = ns;
+    public KeyPanel(NoteSet onNote, NoteSet assistedNote) {
+        this.noteSet = onNote;
+        this.assistedNote = assistedNote;
         this. setBounds(0, 0, WIDTH, HEIGHT);
     }
 

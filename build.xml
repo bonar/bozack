@@ -19,15 +19,11 @@
     <javac srcdir="test" classpathref="run.cp" destdir="classes"/>
   </target>
  
-  <target name="run" depends="compile">
-    <java classname="StartFilter" classpath="classes" fork="yes"/>
-  </target>
-
   <target name="note" depends="compile">
     <java classname="NoteCalc" classpath="classes" fork="yes"/>
   </target>
 
-  <target name="jack" depends="compile">
+  <target name="dump" depends="compile">
     <java classname="JackInstrument" classpath="classes" fork="yes"/>
   </target>
 

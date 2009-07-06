@@ -43,7 +43,6 @@ class JackInstrument {
             e.printStackTrace();
             System.exit(0);
         }
-
     }
 }
 

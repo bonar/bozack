@@ -7,7 +7,7 @@ import bozack.NoteSet;
 public interface NoteEventListener {
     void performOnNote(Note onNote, NoteSet pressedNotes);
     void performOnNoteAssisted(
-        Note onNote, NoteSet pressedNotes, Note assistedNote);
+        Note onNote, NoteSet pressedNotes, NoteSet assistedNotes);
     void performOffNote(Note offNote, NoteSet pressedNotes);
 }
 

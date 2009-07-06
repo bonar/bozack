@@ -15,13 +15,13 @@ import java.util.Iterator;
 public final class ChordSafe
     extends CustomReceiver {
 
-    private ChromaSet chroma           = new ChromaSet();
-    private ChordProgression chordProg = new ChordProgression();
-    private NoteSet innerOnNote        = new NoteSet();
+    private ChromaSet chroma;
+    private ChordProgression chordProg;
     private int chordCursor = 0;
 
     public ChordSafe() {
-        this.chroma = this.chordProg.getChord().getChromaSet();
+        this.chroma    = this.chordProg.getChord().getChromaSet();
+        this.chordProg = new ChordProgression();
     }
 
     protected void handleShortMessage(ShortMessage sm, long timeStamp) {
@@ -45,7 +45,7 @@ public final class ChordSafe
                     break;
                 }
             case ShortMessage.NOTE_OFF:
-                this.innerOnNote.clear();
+                this.assistedOnNote.clear();
                 this.defaultChannel.noteOff(
                     sm.getData1(), sm.getData2());
                 break;
@@ -83,7 +83,7 @@ public final class ChordSafe
         for (int i = note.getNote(); i > 12; i++) {
             Note targetNote = new Note(i);
             if (largeChroma.contains(targetNote.getChroma())
-                && !this.innerOnNote.contains(targetNote)) {
+                && !this.assistedOnNote.contains(targetNote)) {
                 return targetNote;
             }
         }
@@ -94,8 +94,8 @@ public final class ChordSafe
         for (int i = note.getNote(); i > 12; i--) {
             Note targetNote = new Note(i);
             if (this.chroma.contains(targetNote.getChroma())
-                && !this.innerOnNote.contains(targetNote)) {
-                this.innerOnNote.add(targetNote);
+                && !this.assistedOnNote.contains(targetNote)) {
+                this.assistedOnNote.add(targetNote);
                 return targetNote;
             }
         }
