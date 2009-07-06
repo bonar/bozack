@@ -14,7 +14,7 @@ public final class BridgeFrame extends JFrame {
 
     private static final int POS_X  = 60;
     private static final int POS_Y  = 10;
-    private static final int WIDTH  = 1100;
+    private static final int WIDTH  = 1200;
     private static final int HEIGHT = 600;
 
     private static NoteSet noteSet = null;
@@ -47,11 +47,11 @@ class KeyPanel extends JPanel {
     private static final int WIDTH  = 950;
     private static final int HEIGHT = 220;
 
-    private static final int KEY_WIDTH  = 44;
+    private static final int KEY_WIDTH  = 42;
     private static final int KEY_HEIGHT = 120;
 
     private static int NOTE_START = 12;
-    private static int NOTE_END   = 84;
+    private static int NOTE_END   = 108;
 
     private static final Font FONT_KB_LETTER
         = new Font("Serif", Font.PLAIN, 12);
@@ -69,13 +69,13 @@ class KeyPanel extends JPanel {
         super.paintComponent(g);
         g.setFont(FONT_KB_LETTER);
 
-        int x = 0;
+        int x = 10 + (-1 * KEY_WIDTH);
         int y_row_height = 0;
         int x_col_width  = 0;
         for (int note = NOTE_START; note < NOTE_END; note++) {
-            if (note >= 48) {
-                y_row_height = 260;
-                x_col_width  = 850;
+            if (note >= 60) {
+                y_row_height = 250;
+                x_col_width  = 1175;
             }
             x += KEY_WIDTH;
             int y = 10 + KEY_HEIGHT + y_row_height;
