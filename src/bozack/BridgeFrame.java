@@ -1,14 +1,24 @@
 
 package bozack;
 
-import bozack.Note;
-import bozack.NoteSet;
 import java.text.DecimalFormat;
-import javax.swing.*;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
 import java.awt.Container;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Font;
+import java.util.ArrayList;
+import javax.sound.midi.MidiSystem;
+import javax.sound.midi.MidiDevice;
+import javax.sound.midi.MidiUnavailableException;
+
+import bozack.Note;
+import bozack.NoteSet;
+import bozack.midi.Bridge;
+import bozack.midi.receiver.CustomReceiver;
+import bozack.midi.receiver.DumpRelay;
+import bozack.midi.event.FramePainter;
 
 public final class BridgeFrame extends JFrame {
 
@@ -17,12 +27,34 @@ public final class BridgeFrame extends JFrame {
     private static final int WIDTH  = 1200;
     private static final int HEIGHT = 600;
 
-    private static NoteSet noteSet = null;
+    private static NoteSet noteSet;
 
     private static int IDX_COMP_KEYPANEL = 0;
 
     public BridgeFrame() {
         this.setBounds(POS_X, POS_Y, WIDTH, HEIGHT);
+
+        ArrayList devices = Bridge.getDevices();
+        bozack.midi.Bridge bridge = new bozack.midi.Bridge();
+        CustomReceiver recv = new DumpRelay();
+        recv.addNoteEventListener(new FramePainter(this));
+        try {
+            bridge.connect(
+                (MidiDevice)(devices.get(0)),
+                MidiSystem.getSynthesizer(),
+                recv
+            );
+        } catch (MidiUnavailableException e) {
+            System.err.println(e.getMessage());
+            System.exit(0);
+        }
+
+        this.noteSet = new NoteSet();
+        this.paintKeyPanel(this.noteSet);
+
+        // register Software Keyboard emulation
+        this.addKeyListener(new PianoKeyEmulator(recv));
+
         this.setVisible(true);
     }
     
@@ -153,32 +185,19 @@ class KeyPanel extends JPanel {
 
     private static String chromaToString(int chroma) {
         switch (chroma) {
-            case 0:
-                return "C";
-            case 1:
-                return "C#";
-            case 2:
-                return "D";
-            case 3:
-                return "D#";
-            case 4:
-                return "E";
-            case 5:
-                return "F";
-            case 6:
-                return "F#";
-            case 7:
-                return "G";
-            case 8:
-                return "G#";
-            case 9:
-                return "A";
-            case 10:
-                return "A#";
-            case 11:
-                return "B";
-            default:
-                return "-";
+            case 0: return "C";
+            case 1: return "C#";
+            case 2: return "D";
+            case 3: return "D#";
+            case 4: return "E";
+            case 5: return "F";
+            case 6: return "F#";
+            case 7: return "G";
+            case 8: return "G#";
+            case 9: return "A";
+            case 10: return "A#";
+            case 11: return "B";
+            default: return "-";
         }
 
     }
