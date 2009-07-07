@@ -3,6 +3,7 @@ package bozack.midi.event;
 
 import bozack.BridgeFrame;
 import bozack.midi.event.NoteEventListener;
+import bozack.midi.receiver.CustomReceiver;
 import bozack.Note;
 import bozack.NoteSet;
 
@@ -13,17 +14,14 @@ public class FramePainter implements NoteEventListener {
         this.frame = frame;
     }
 
-    public void performOnNote(Note onNote, NoteSet pressedNotes) {
-        this.frame.paintKeyPanel(pressedNotes);
+    public void performOnNote(CustomReceiver recv, Note onNote) {
+        this.frame.paintKeyPanel(recv.getOnNote()
+            , recv.getAssistedOnNote());
     }
     
-    public void performOnNoteAssisted(
-        Note onNote, NoteSet pressedNotes, NoteSet assistedNotes) {
-        this.frame.paintKeyPanel(pressedNotes, assistedNotes);
-    }
-    
-    public void  performOffNote(Note offNote, NoteSet pressedNotes) {
-        this.frame.paintKeyPanel(pressedNotes);
+    public void  performOffNote(CustomReceiver recv, Note offNote) {
+        this.frame.paintKeyPanel(recv.getOnNote()
+            , recv.getAssistedOnNote());
     }
 }
 

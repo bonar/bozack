@@ -31,6 +31,14 @@ public class CustomReceiver
         this.onNoteHistory  = new NoteList();
     }
 
+    public NoteSet getOnNote() {
+        return (NoteSet)this.onNote.clone();
+    }
+
+    public NoteSet getAssistedOnNote() {
+        return (NoteSet)this.assistedOnNote.clone();
+    }
+
     public void setSynth(MidiDevice device) {
         if (!(device instanceof Synthesizer)) {
             throw new IllegalArgumentException(
@@ -126,17 +134,10 @@ public class CustomReceiver
             NoteEventListener listener
                 = (NoteEventListener)iter.next();
             if (type == NOTE_EVENT.ON) {
-                if (this.assistedOnNote.size() > 0) {
-                    listener.performOnNoteAssisted(lastNote
-                        , this.onNote
-                        , this.assistedOnNote);
-                }
-                else {
-                    listener.performOnNote(lastNote, this.onNote);
-                }
+                listener.performOnNote(this, lastNote);
             }
             else {
-                listener.performOffNote(lastNote, this.onNote);
+                listener.performOffNote(this, lastNote);
             }
 
         }
