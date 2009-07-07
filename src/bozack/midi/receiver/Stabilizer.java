@@ -14,6 +14,10 @@ public final class Stabilizer
 
     }
 
+    private static final int SCAN_RANGE = 8;
+    private static final double DIRECT_RETURN_BORDER = 0.3d;
+    private static final double NEIBOUR_BONUS_RATE   = 0.08d;
+
     protected void handleShortMessage(ShortMessage sm, long timeStamp) {
         switch(sm.getCommand()) {
             case ShortMessage.NOTE_ON:
@@ -37,7 +41,44 @@ public final class Stabilizer
     }
 
     private Note pickup(Note note) {
-        return new Note(note.getNote() + 1);
+    System.out.println("----------------------");
+        if (0 == this.assistedOnNote.size()) {
+            return note;
+        }
+        int cursorMove = 1;
+        if (null == this.lastNote
+            || note.getNote() > this.lastNote.getNote()) {
+            cursorMove = 1;
+        }
+
+        int scanRange = SCAN_RANGE;
+        int tmpNote = note.getNote();
+        double minDes = 100.0d;
+        int minDesNote = note.getNote();
+        while (0 != scanRange--) {
+            Note cursorNote = new Note(tmpNote);
+
+            NoteSet tmpNoteSet = (NoteSet)this.assistedOnNote.clone();
+            tmpNoteSet.add(cursorNote);
+            double des = tmpNoteSet.getDessonance();
+
+            double neibour_bonus = NEIBOUR_BONUS_RATE * scanRange;
+            double total = (des / tmpNoteSet.size()) - neibour_bonus;
+            System.out.println(cursorNote + " des:" + total);
+
+            if (!this.assistedOnNote.contains(cursorNote) &&
+                total < DIRECT_RETURN_BORDER) {
+                return new Note(tmpNote);
+            }
+
+            if (!this.assistedOnNote.contains(cursorNote) &&
+                total < minDes) {
+                minDesNote = tmpNote;
+                minDes = total;
+            }
+            tmpNote += cursorMove;
+        }
+        return new Note(minDesNote);
     }
 
     private void noteOff(Note note, int velocity) {

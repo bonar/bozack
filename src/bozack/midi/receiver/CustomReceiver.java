@@ -18,7 +18,7 @@ public class CustomReceiver
     protected NoteSet onNote;
     protected NoteSet assistedOnNote;
     protected NoteHashMap pickupRelation;
-    protected NoteList onNoteHistory;
+    protected Note lastNote;
 
     private ArrayList<NoteEventListener> noteEventListeners
         = new ArrayList<NoteEventListener>();
@@ -30,8 +30,8 @@ public class CustomReceiver
     public CustomReceiver() {
         this.onNote         = new NoteSet();
         this.assistedOnNote = new NoteSet();
-        this.onNoteHistory  = new NoteList();
         this.pickupRelation = new NoteHashMap();
+        this.lastNote = null;
     }
 
     public NoteSet getOnNote() {
@@ -88,8 +88,9 @@ public class CustomReceiver
 
             switch(sm.getCommand()) {
                 case ShortMessage.NOTE_ON:
-                    this.performNoteEvent(new Note(sm.getData1())
-                        , NOTE_EVENT.ON);
+                    Note n = new Note(sm.getData1());
+                    this.lastNote = n;
+                    this.performNoteEvent(n, NOTE_EVENT.ON);
                     break;
                 case ShortMessage.NOTE_OFF:
                     this.performNoteEvent(new Note(sm.getData1())
@@ -115,10 +116,6 @@ public class CustomReceiver
                 this.onNote.remove(note);
                 break;
         }
-    }
-
-    private void appendHistory(ShortMessage sm) {
-        this.onNoteHistory.add(new Note(sm.getData1()));
     }
 
     protected void handleMessage(

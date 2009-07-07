@@ -1,9 +1,10 @@
 
-import java.io.*;
-import bozack.BridgeFrame;
+import java.io.InputStreamReader;
+import java.io.IOException;
+import bozack.ui.BridgeFrame;
 import bozack.NoteSet;
 
-class JackInstrument {
+class StartBozack {
     public static void main (String[] arg) {
 
         BridgeFrame frame = new BridgeFrame();

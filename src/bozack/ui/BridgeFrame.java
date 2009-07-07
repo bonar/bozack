@@ -1,5 +1,5 @@
 
-package bozack;
+package bozack.ui;
 
 import java.text.DecimalFormat;
 import javax.swing.JFrame;
@@ -17,6 +17,7 @@ import bozack.Note;
 import bozack.NoteSet;
 import bozack.NoteHashMap;
 import bozack.midi.Bridge;
+import bozack.midi.PianoKeyEmulator;
 import bozack.midi.receiver.CustomReceiver;
 import bozack.midi.receiver.DumpRelay;
 import bozack.midi.receiver.Stabilizer;

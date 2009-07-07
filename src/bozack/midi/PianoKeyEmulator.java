@@ -1,5 +1,5 @@
 
-package bozack;
+package bozack.midi;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -7,6 +7,7 @@ import javax.sound.midi.ShortMessage;
 import javax.sound.midi.InvalidMidiDataException;
 import bozack.midi.receiver.CustomReceiver;
 import bozack.Note;
+import bozack.NoteSet;
 
 public final class PianoKeyEmulator
     implements KeyListener {

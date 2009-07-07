@@ -1,7 +1,7 @@
 
 package bozack.midi.event;
 
-import bozack.BridgeFrame;
+import bozack.ui.BridgeFrame;
 import bozack.midi.event.NoteEventListener;
 import bozack.midi.receiver.CustomReceiver;
 import bozack.Note;
