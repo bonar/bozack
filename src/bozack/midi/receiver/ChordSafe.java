@@ -20,15 +20,15 @@ public final class ChordSafe
     private int chordCursor = 0;
 
     public ChordSafe() {
-        this.chroma    = this.chordProg.getChord().getChromaSet();
         this.chordProg = new ChordProgression();
+        this.chroma    = this.chordProg.getChord().getChromaSet();
     }
 
     protected void handleShortMessage(ShortMessage sm, long timeStamp) {
         switch(sm.getCommand()) {
             case ShortMessage.NOTE_ON:
                 Note givenNote = new Note(sm.getData1());
-                if (givenNote.getOctav() < 6) {
+                if (givenNote.getOctav() < 2) {
                     Note cNote = pickupChord(givenNote);
                     if (null != cNote) {
                         this.defaultChannel.noteOn(

@@ -18,6 +18,7 @@ import bozack.NoteSet;
 import bozack.midi.Bridge;
 import bozack.midi.receiver.CustomReceiver;
 import bozack.midi.receiver.DumpRelay;
+import bozack.midi.receiver.Stabilizer;
 import bozack.midi.event.FramePainter;
 
 public final class BridgeFrame extends JFrame {
@@ -36,7 +37,7 @@ public final class BridgeFrame extends JFrame {
 
         ArrayList devices = Bridge.getDevices();
         bozack.midi.Bridge bridge = new bozack.midi.Bridge();
-        CustomReceiver recv = new DumpRelay();
+        CustomReceiver recv = new Stabilizer();
         recv.addNoteEventListener(new FramePainter(this));
         try {
             bridge.connect(
@@ -142,6 +143,10 @@ class KeyPanel extends JPanel {
                 g.setColor(Color.yellow);
                 g.fillRect((x - x_col_width), y, KEY_WIDTH, KEY_HEIGHT);
                 isOnNote = true;
+            }
+            else if (this.assistedNote.contains(cursorNote)) {
+                g.setColor(Color.magenta);
+                g.fillRect((x - x_col_width), y, KEY_WIDTH, KEY_HEIGHT);
             }
             else {
                 Color heatColor = new Color(255, desIndex, desIndex);

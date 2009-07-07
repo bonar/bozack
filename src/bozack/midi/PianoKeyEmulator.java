@@ -14,9 +14,11 @@ public final class PianoKeyEmulator
     private static final int VELOCITY = 100;
     private final CustomReceiver receiver;
     private int octav = 4;
+    private NoteSet onNote;
 
     public PianoKeyEmulator(CustomReceiver recv) {
         this.receiver = recv;
+        this.onNote = new NoteSet();
     }
 
     public void keyTyped(KeyEvent e) {
@@ -24,25 +26,33 @@ public final class PianoKeyEmulator
     }
 
     public void keyPressed(KeyEvent e) {
-        System.out.println("pressed: " + e);
-
         Note inputNote = getNoteByKeyCode(e.getKeyCode(), this.octav);
-        if (null != inputNote) {
-            ShortMessage sm = new ShortMessage();
-            try {
-            sm.setMessage(ShortMessage.NOTE_ON
-                , inputNote.getNote(), VELOCITY);
-            } catch (InvalidMidiDataException ie) {
-                System.out.println(ie.getMessage());
-                return;
-            }
-            System.out.println(inputNote);
+        if (this.onNote.contains(inputNote)) {
+            return;
         }
-
+        if (null != inputNote) {
+            this.onNote.add(inputNote);
+            this.sendToReciever(inputNote, ShortMessage.NOTE_ON);
+        }
     }
 
     public void keyReleased(KeyEvent e) {
+        Note inputNote = getNoteByKeyCode(e.getKeyCode(), this.octav);
+        if (null != inputNote) {
+            this.onNote.remove(inputNote);
+            this.sendToReciever(inputNote, ShortMessage.NOTE_OFF);
+        }
+    }
 
+    private void sendToReciever(Note note, int type) {
+        ShortMessage sm = new ShortMessage();
+        try {
+            sm.setMessage(type, note.getNote(), VELOCITY);
+            this.receiver.send(sm, 0l);
+        } catch (InvalidMidiDataException ie) {
+            System.out.println(ie.getMessage());
+            return;
+        }
     }
 
     public static Note getNoteByKeyCode(int key, int octav) {
@@ -63,6 +73,10 @@ public final class PianoKeyEmulator
             case KeyEvent.VK_7: octav_tmp++; chroma = 10; break;
             case KeyEvent.VK_U: octav_tmp++; chroma = 11; break;
             case KeyEvent.VK_I: octav_tmp += 2; chroma = 0; break;
+            case KeyEvent.VK_9: octav_tmp += 2; chroma = 1; break;
+            case KeyEvent.VK_O: octav_tmp += 2; chroma = 2; break;
+            case KeyEvent.VK_0: octav_tmp += 2; chroma = 3; break;
+            case KeyEvent.VK_P: octav_tmp += 2; chroma = 4; break;
 
             case KeyEvent.VK_Z: chroma = 0; break;
             case KeyEvent.VK_S: chroma = 1; break;

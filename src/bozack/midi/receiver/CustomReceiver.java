@@ -126,7 +126,14 @@ public class CustomReceiver
             NoteEventListener listener
                 = (NoteEventListener)iter.next();
             if (type == NOTE_EVENT.ON) {
-                listener.performOnNote(lastNote, this.onNote);
+                if (this.assistedOnNote.size() > 0) {
+                    listener.performOnNoteAssisted(lastNote
+                        , this.onNote
+                        , this.assistedOnNote);
+                }
+                else {
+                    listener.performOnNote(lastNote, this.onNote);
+                }
             }
             else {
                 listener.performOffNote(lastNote, this.onNote);
