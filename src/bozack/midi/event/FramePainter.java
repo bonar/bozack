@@ -16,12 +16,14 @@ public class FramePainter implements NoteEventListener {
 
     public void performOnNote(CustomReceiver recv, Note onNote) {
         this.frame.paintKeyPanel(recv.getOnNote()
-            , recv.getAssistedOnNote());
+            , recv.getAssistedOnNote()
+            , recv.getPickupRelation());
     }
     
     public void  performOffNote(CustomReceiver recv, Note offNote) {
         this.frame.paintKeyPanel(recv.getOnNote()
-            , recv.getAssistedOnNote());
+            , recv.getAssistedOnNote()
+            , recv.getPickupRelation());
     }
 }
 

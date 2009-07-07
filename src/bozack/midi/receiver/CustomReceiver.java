@@ -7,6 +7,7 @@ import javax.sound.midi.*;
 import bozack.Note;
 import bozack.NoteSet;
 import bozack.NoteList;
+import bozack.NoteHashMap;
 import bozack.midi.event.NoteEventListener;
 
 public class CustomReceiver
@@ -16,6 +17,7 @@ public class CustomReceiver
     protected MidiChannel defaultChannel;
     protected NoteSet onNote;
     protected NoteSet assistedOnNote;
+    protected NoteHashMap pickupRelation;
     protected NoteList onNoteHistory;
 
     private ArrayList<NoteEventListener> noteEventListeners
@@ -29,6 +31,7 @@ public class CustomReceiver
         this.onNote         = new NoteSet();
         this.assistedOnNote = new NoteSet();
         this.onNoteHistory  = new NoteList();
+        this.pickupRelation = new NoteHashMap();
     }
 
     public NoteSet getOnNote() {
@@ -37,6 +40,10 @@ public class CustomReceiver
 
     public NoteSet getAssistedOnNote() {
         return (NoteSet)this.assistedOnNote.clone();
+    }
+
+    public NoteHashMap getPickupRelation() {
+        return (NoteHashMap)this.pickupRelation.clone();
     }
 
     public void setSynth(MidiDevice device) {

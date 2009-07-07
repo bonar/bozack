@@ -7,15 +7,11 @@ import bozack.midi.receiver.CustomReceiver;
 import bozack.Note;
 import bozack.NoteSet;
 
-class NoteHashMap extends HashMap<Note, Note> {}
-
 public final class Stabilizer
     extends CustomReceiver {
 
-    private NoteHashMap pickupRelation;
-
     public Stabilizer() {
-        this.pickupRelation = new NoteHashMap();
+
     }
 
     protected void handleShortMessage(ShortMessage sm, long timeStamp) {

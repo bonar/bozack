@@ -15,6 +15,7 @@ import javax.sound.midi.MidiUnavailableException;
 
 import bozack.Note;
 import bozack.NoteSet;
+import bozack.NoteHashMap;
 import bozack.midi.Bridge;
 import bozack.midi.receiver.CustomReceiver;
 import bozack.midi.receiver.DumpRelay;
@@ -60,13 +61,18 @@ public final class BridgeFrame extends JFrame {
     }
     
     public void paintKeyPanel (NoteSet onNote) {
-        this.paintKeyPanel(onNote, new NoteSet());
+        this.paintKeyPanel(onNote, new NoteSet(), new NoteHashMap());
     }
 
-    public void paintKeyPanel (NoteSet onNote, NoteSet assistedNote) {
+    public void paintKeyPanel (
+        NoteSet onNote,
+        NoteSet assistedNote,
+        NoteHashMap pickupRelation)
+    {
         Container contentPane = this.getContentPane();
         this.noteSet = onNote;
-        KeyPanel kp = new KeyPanel(this.noteSet, assistedNote);
+        KeyPanel kp = new KeyPanel(this.noteSet
+            , assistedNote, pickupRelation);
         try {
             contentPane.remove(IDX_COMP_KEYPANEL);
         } catch (Exception e) { }
@@ -91,10 +97,13 @@ class KeyPanel extends JPanel {
 
     private final NoteSet noteSet;
     private final NoteSet assistedNote;
+    private final NoteHashMap pickupRelation;
 
-    public KeyPanel(NoteSet onNote, NoteSet assistedNote) {
+    public KeyPanel(NoteSet onNote
+        , NoteSet assistedNote, NoteHashMap pickupRelation) {
         this.noteSet = onNote;
-        this.assistedNote = assistedNote;
+        this.assistedNote   = assistedNote;
+        this.pickupRelation = pickupRelation;
         this. setBounds(0, 0, WIDTH, HEIGHT);
     }
 
@@ -144,10 +153,6 @@ class KeyPanel extends JPanel {
                 g.fillRect((x - x_col_width), y, KEY_WIDTH, KEY_HEIGHT);
                 isOnNote = true;
             }
-            else if (this.assistedNote.contains(cursorNote)) {
-                g.setColor(Color.magenta);
-                g.fillRect((x - x_col_width), y, KEY_WIDTH, KEY_HEIGHT);
-            }
             else {
                 Color heatColor = new Color(255, desIndex, desIndex);
                 g.setColor(heatColor);
@@ -173,6 +178,25 @@ class KeyPanel extends JPanel {
                 g.drawString(
                     new DecimalFormat("00.000").format(average)
                     , ((x - x_col_width)+ 6), (y + 70));
+            }
+
+            // assist marker
+            if (this.assistedNote.contains(cursorNote)) {
+                g.setColor(Color.green.darker());
+                g.fillRect((x - x_col_width + 3), (y + 80)
+                    , (KEY_WIDTH - 6), (KEY_HEIGHT - 82));
+                g.setColor(Color.black);
+                g.drawRect((x - x_col_width + 3), (y + 80)
+                    , (KEY_WIDTH - 6), (KEY_HEIGHT - 82));
+
+                // where the cursorNote was assisted from
+                Note fromNote = pickupRelation.scanValue(cursorNote);
+                if (null != fromNote) {
+                    g.setColor(Color.white);
+                    g.drawString(chromaToString(fromNote.getChroma()) 
+                        + " " + (note / 12)
+                        , ((x - x_col_width)+ 10), (y + 105));
+                }
             }
 
             g.setColor(Color.black);
