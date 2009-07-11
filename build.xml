@@ -46,6 +46,7 @@
   <target name="jar" depends="compile">
     <jar jarfile="bozack.jar" manifest="manifest.mf">
       <fileset dir="classes" includes="**/*.class" />
+      <fileset dir="images" includes="splash.png" />
     </jar>
   </target>
   <!-- /test -->
