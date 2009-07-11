@@ -33,25 +33,26 @@ public final class BridgeFrame extends JFrame
     private static final int POS_Y  = 10;
     private static final int WIDTH  = 1200;
     private static final int HEIGHT = 600;
-
     private static NoteSet noteSet;
-
     private static int IDX_COMP_KEYPANEL = 0;
+
+    private Bridge bridge;
+    private MidiDevice deviceIn;
+    private Synthesizer deviceOut;
 
     public BridgeFrame() {
         this.setBounds(POS_X, POS_Y, WIDTH, HEIGHT);
         this.appendMenu();
-
-        ArrayList devices = Bridge.getDevices();
-        bozack.midi.Bridge bridge = new bozack.midi.Bridge();
+        
         CustomReceiver recv = new Stabilizer();
         recv.addNoteEventListener(new FramePainter(this));
+
+        this.bridge = new Bridge();
+        ArrayList devices = Bridge.getDevices();
+        this.deviceIn  = (MidiDevice)(devices.get(0));
         try {
-            bridge.connect(
-                (MidiDevice)(devices.get(0)),
-                MidiSystem.getSynthesizer(),
-                recv
-            );
+            this.deviceOut = MidiSystem.getSynthesizer();
+            this.connectDevice(recv);
         } catch (MidiUnavailableException e) {
             System.err.println(e.getMessage());
             System.exit(0);
@@ -66,6 +67,11 @@ public final class BridgeFrame extends JFrame
         this.setVisible(true);
     }
 
+    private void connectDevice(CustomReceiver recv) 
+        throws MidiUnavailableException {
+        this.bridge.connect(this.deviceIn, this.deviceOut, recv);
+    }
+
     private void appendMenu() {
         JMenu menuProp = new JMenu("Filter mode");
         menuProp.add("Simple Relay");
@@ -73,7 +79,11 @@ public final class BridgeFrame extends JFrame
 
         JMenu menuDevice = new JMenu("MIDI Devices");
         JMenu menuDeviceController = new JMenu("Select Controller");
+        JMenu menuDeviceSynth      = new JMenu("Select Synthesizer");
+
+        // scan controller and synthesizer
         MidiDevice.Info[] info = MidiSystem.getMidiDeviceInfo();
+        ArrayList<MidiDevice> synth = new ArrayList<MidiDevice>();
         for (int i = 0; i < info.length; i++) {
             MidiDevice device;
             try {
@@ -81,15 +91,19 @@ public final class BridgeFrame extends JFrame
             } catch (MidiUnavailableException e) {
                 continue;
             }
-            if (device instanceof Synthesizer) {
-                continue;
-            }
             JMenuItem menuItem = new JMenuItem();
-            menuItem.setText(info[i].getName());
-            menuDeviceController.add(menuItem);
+            menuItem.setText(info[i].getVendor() 
+                + " - " + info[i].getName());
+
+            if (device instanceof Synthesizer) {
+                menuDeviceSynth.add(menuItem);
+            }
+            else {
+                menuDeviceController.add(menuItem);
+            }
         }
         menuDevice.add(menuDeviceController);
-        menuDevice.add("Select Synthesizer");
+        menuDevice.add(menuDeviceSynth);
         menuDevice.add("Select Foot Device");
 
         JMenuBar menuBar = new JMenuBar();

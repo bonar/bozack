@@ -19,13 +19,19 @@ public final class Stabilizer
     private static final double NEIBOUR_BONUS_RATE   = 0.08d;
 
     protected void handleShortMessage(ShortMessage sm, long timeStamp) {
-        switch(sm.getCommand()) {
-            case ShortMessage.NOTE_ON:
-                this.noteOn(new Note(sm.getData1()), sm.getData2());
-                break;
-            case ShortMessage.NOTE_OFF:
-                this.noteOff(new Note(sm.getData1()), sm.getData2());
-                break;
+        if (sm.getCommand() == ShortMessage.NOTE_ON
+            && sm.getData2() > 0) {
+            System.out.println("note on " + sm.getData1() + " " + sm.getData2());
+            this.noteOn(new Note(sm.getData1()), sm.getData2());
+            return;
+        }
+        else if ((sm.getCommand() == ShortMessage.NOTE_ON 
+            && sm.getData2() == 0) || 
+            sm.getCommand() == ShortMessage.NOTE_OFF
+            ) {
+            System.out.println("note off " + sm.getData1() + " " + sm.getData2());
+            this.noteOff(new Note(sm.getData1()), sm.getData2());
+            return;
         }
     }
 
@@ -41,7 +47,6 @@ public final class Stabilizer
     }
 
     private Note pickup(Note note) {
-    System.out.println("----------------------");
         if (0 == this.assistedOnNote.size()) {
             return note;
         }
@@ -64,7 +69,6 @@ public final class Stabilizer
 
             double neibour_bonus = NEIBOUR_BONUS_RATE * scanRange;
             double total = (des / tmpNoteSet.size()) - neibour_bonus;
-            System.out.println(cursorNote + " des:" + total);
 
             if (!this.assistedOnNote.contains(cursorNote) &&
                 total < DIRECT_RETURN_BORDER) {
