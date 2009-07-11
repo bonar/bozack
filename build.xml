@@ -12,6 +12,7 @@
   <target name="clean">
     <delete dir="classes"/>
     <delete dir="test-output"/>
+    <delete file="bozack.jar"/>
   </target>
  
   <target name="compile" depends="mkdir">
@@ -40,6 +41,12 @@
       </classpath>
       <xmlfileset dir="." includes="testng.xml" />
     </testng>
+  </target>
+
+  <target name="jar" depends="compile">
+    <jar jarfile="bozack.jar" manifest="manifest.mf">
+      <fileset dir="classes" includes="**/*.class" />
+    </jar>
   </target>
   <!-- /test -->
  

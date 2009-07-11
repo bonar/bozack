@@ -5,6 +5,8 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JMenuBar;
+import javax.swing.JRadioButtonMenuItem;
+import javax.swing.ButtonGroup;
 import javax.swing.event.MenuListener;
 import javax.swing.event.MenuEvent;
 import java.util.ArrayList;
@@ -74,14 +76,23 @@ public final class BridgeFrame extends JFrame
 
     private void appendMenu() {
         JMenu menuProp = new JMenu("Filter mode");
-        menuProp.add("Simple Relay");
-        menuProp.add("Avoid Dessonance");
+        ButtonGroup groupProp  = new ButtonGroup();
+        JMenuItem menuPropSimpe = new JRadioButtonMenuItem(
+            "Simple Relay", true);
+        JMenuItem menuPropDes = new JRadioButtonMenuItem(
+            "Avoid Dessonance");
+        groupProp.add(menuPropSimpe);
+        groupProp.add(menuPropDes);
+        menuProp.add(menuPropSimpe);
+        menuProp.add(menuPropDes);
 
         JMenu menuDevice = new JMenu("MIDI Devices");
         JMenu menuDeviceController = new JMenu("Select Controller");
         JMenu menuDeviceSynth      = new JMenu("Select Synthesizer");
 
         // scan controller and synthesizer
+        ButtonGroup groupController  = new ButtonGroup();
+        ButtonGroup groupSynthesizer = new ButtonGroup();
         MidiDevice.Info[] info = MidiSystem.getMidiDeviceInfo();
         ArrayList<MidiDevice> synth = new ArrayList<MidiDevice>();
         for (int i = 0; i < info.length; i++) {
@@ -91,14 +102,15 @@ public final class BridgeFrame extends JFrame
             } catch (MidiUnavailableException e) {
                 continue;
             }
-            JMenuItem menuItem = new JMenuItem();
-            menuItem.setText(info[i].getVendor() 
-                + " - " + info[i].getName());
+            JMenuItem menuItem = new JRadioButtonMenuItem(
+                info[i].getVendor() + " - " + info[i].getName());
 
             if (device instanceof Synthesizer) {
+                groupSynthesizer.add(menuItem);
                 menuDeviceSynth.add(menuItem);
             }
             else {
+                groupController.add(menuItem);
                 menuDeviceController.add(menuItem);
             }
         }
