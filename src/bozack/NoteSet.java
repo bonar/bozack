@@ -12,7 +12,7 @@ public final class NoteSet extends LinkedHashSet<Note>
     private DissonanceMap dissonance = new DissonanceMap();
 
     public double getDessonance() {
-        return this.getDessonance(this.dissonance);
+        return this.getDessonance(new DissonanceMap());
     }
 
     public double getDessonance(DissonanceMap dis) {
@@ -26,7 +26,8 @@ public final class NoteSet extends LinkedHashSet<Note>
                 Note noteB = (Note)iter_inner.next();
 
                 double tmpDis = 0.0d;
-                if (null != dis) {
+                if (null != dis
+                    && dis.hasKey(noteA.getNote(), noteB.getNote())) {
                     tmpDis = dis.getValue(noteA, noteB);
                 }
                 else {

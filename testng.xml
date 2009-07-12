@@ -6,7 +6,6 @@
       <class name="bozack.TestNoteSet"></class>
       <class name="bozack.TestChord"></class>
       <class name="bozack.TestChordRole"></class>
-      <class name="bozack.TestChordProgression"></class>
     </classes>
   </test>
 </suite>
