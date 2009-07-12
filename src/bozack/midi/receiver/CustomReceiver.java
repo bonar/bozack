@@ -118,9 +118,9 @@ public class CustomReceiver
         }
     }
 
-    protected void handleMessage(
+    public void handleMessage(
         MidiMessage message, long timeStamp) { }
-    protected void handleShortMessage(
+    public void handleShortMessage(
         ShortMessage message, long timeStamp) { 
         System.out.println("parent method"); }
     public void close() { }

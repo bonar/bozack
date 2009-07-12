@@ -19,6 +19,8 @@ import javax.sound.midi.MidiDevice;
 import javax.sound.midi.MidiDevice.Info;
 import javax.sound.midi.Sequencer;
 import javax.sound.midi.Synthesizer;
+import javax.sound.midi.ShortMessage;
+import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiUnavailableException;
 import java.awt.Container;
 import java.awt.Dimension;
@@ -54,6 +56,7 @@ public final class BridgeFrame extends JFrame {
     private MidiDevice deviceIn;
     private Synthesizer deviceOut;
     private CustomReceiver receiver;
+    private PianoKeyEmulator pianoKey;
 
     public BridgeFrame() {
         this.setBounds(POS_X, POS_Y, WIDTH, HEIGHT);
@@ -72,10 +75,6 @@ public final class BridgeFrame extends JFrame {
             System.err.println(e.getMessage());
             System.exit(0);
         }
-        System.out.println("autoselect in:" +
-            this.deviceIn.getDeviceInfo().getName());
-        System.out.println("autoselect out:" +
-            this.deviceOut.getDeviceInfo().getName());
         this.appendMenu();
 
         this.paintConnectionPanel();
@@ -83,8 +82,8 @@ public final class BridgeFrame extends JFrame {
         this.paintKeyPanel(this.noteSet);
 
         // register Software Keyboard emulation
-        this.addKeyListener(new PianoKeyEmulator(recv));
-
+        this.pianoKey = new PianoKeyEmulator(recv);
+        this.addKeyListener(this.pianoKey);
 
         this.setVisible(true);
     }
@@ -100,6 +99,16 @@ public final class BridgeFrame extends JFrame {
     }
 
     public void setReciever(CustomReceiver recv) {
+        this.deviceIn.close();
+        this.deviceOut.close();
+
+        recv.addNoteEventListener(new FramePainter(this));
+
+        // replace key emulator instance
+        this.removeKeyListener(this.pianoKey);
+        this.pianoKey = new PianoKeyEmulator(recv);
+        this.addKeyListener(this.pianoKey);
+
         this.receiver = recv;
     }
 
@@ -110,26 +119,43 @@ public final class BridgeFrame extends JFrame {
             , this.receiver);
         this.paintConnectionPanel();
 
-        System.out.println("reconnected.");
-        System.out.println("IN:" + this.deviceIn.getDeviceInfo().getName());
-        System.out.println("OUT:" + this.deviceOut.getDeviceInfo().getName());
+        System.out.println("Device reconnected");
+        System.out.println(" - IN: " 
+            + this.deviceIn.getDeviceInfo().getName());
+        System.out.println(" - OUT: " 
+            + this.deviceOut.getDeviceInfo().getName());
+        System.out.println(" - RECV: " 
+            + this.receiver.getClass().getName());
+    }
+
+    private void midiBeep(int note) {
+        try {
+            ShortMessage sm_on = new ShortMessage();
+            sm_on.setMessage(ShortMessage.NOTE_ON, note, 100);
+            ShortMessage sm_off = new ShortMessage();
+            sm_off.setMessage(ShortMessage.NOTE_OFF, note, 100);
+
+            this.receiver.handleShortMessage(sm_on, 0);
+            this.receiver.handleShortMessage(sm_off, 0);
+        } catch (InvalidMidiDataException ime) {
+            System.out.println("beep failed" + ime.getMessage());
+        }
     }
 
     private void appendMenu() {
         JMenu menuProp = new JMenu("Filter mode");
         ButtonGroup groupProp  = new ButtonGroup();
-        JMenuItem menuPropSimpe = new JRadioButtonMenuItem(
-            "Simple Relay", true);
-        menuPropSimpe.addMouseListener(new MouseAdapter() {
-            public void mousePressed(MouseEvent e) {
-                System.out.println("Simple Relay Clicked");
-            }
-        });
+        JMenuItem menuPropSimple = new JRadioButtonMenuItem(
+            "DumpRelay", true);
+        menuPropSimple.addMouseListener(new ReconnectReceiverAdapter(
+            this, new DumpRelay()));
         JMenuItem menuPropDes = new JRadioButtonMenuItem(
-            "Avoid Dessonance");
-        groupProp.add(menuPropSimpe);
+            "Stabilizer");
+        menuPropDes.addMouseListener(new ReconnectReceiverAdapter(
+            this, new Stabilizer()));
+        groupProp.add(menuPropSimple);
         groupProp.add(menuPropDes);
-        menuProp.add(menuPropSimpe);
+        menuProp.add(menuPropSimple);
         menuProp.add(menuPropDes);
 
         JMenu menuDevice = new JMenu("MIDI Devices");
@@ -228,8 +254,10 @@ public final class BridgeFrame extends JFrame {
         public void mouseReleased(MouseEvent e) {
             System.out.println("ReconnectDeviceInAdapter called");
             try {
+                this.frame.midiBeep(90);
                 this.frame.setDeviceIn(this.device);
                 this.frame.connectDevice();
+                this.frame.midiBeep(95);
             } catch (MidiUnavailableException mue) {
                 JOptionPane.showMessageDialog(this.frame
                    , "Device not available: " + mue.getMessage()
@@ -252,14 +280,38 @@ public final class BridgeFrame extends JFrame {
                 return;
             }
             try {
+                this.frame.midiBeep(90);
                 this.frame.setDeviceOut((Synthesizer)this.device);
                 this.frame.connectDevice();
+                this.frame.midiBeep(95);
             } catch (MidiUnavailableException mue) {
                 JOptionPane.showMessageDialog(this.frame
                    , "Device not available: " + mue.getMessage()
                    , "Device Error"
                    , JOptionPane.WARNING_MESSAGE);
             }
+        }
+    }
+    protected class ReconnectReceiverAdapter extends MouseAdapter {
+        private BridgeFrame frame;
+        private CustomReceiver receiver;
+        public ReconnectReceiverAdapter(BridgeFrame f, CustomReceiver r) {
+            this.frame = f;
+            this.receiver = r;
+        }
+        public void mouseReleased(MouseEvent e) {
+            try {
+                this.frame.setReciever(this.receiver);
+                this.frame.connectDevice();
+                this.frame.midiBeep(95);
+            } catch (MidiUnavailableException mue) {
+                JOptionPane.showMessageDialog(this.frame
+                   , "This receiver doesn't match selected devices: "
+                       + mue.getMessage()
+                   , "Receiver Connect Error"
+                   , JOptionPane.WARNING_MESSAGE);
+            }
+
         }
     }
 
