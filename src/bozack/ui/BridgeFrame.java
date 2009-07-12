@@ -390,6 +390,10 @@ public final class BridgeFrame extends JFrame {
             this.deviceIn, deviceOut
             , this.receiver.getClass().getSimpleName()
             , this.chordProg);
+        try {
+            contentPane.remove(IDX_COMP_CONPANEL);
+        } catch (Exception e) { }
+
         contentPane.add(cp, IDX_COMP_CONPANEL);
         contentPane.validate();
     }

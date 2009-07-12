@@ -27,10 +27,6 @@ public class TestChordProgression {
         Chord Em7 = new Chord(ChromaName.E, ChordType.m7);
         assertEquals(Em7, prog.getChord());
 
-        prog.variate();
-        Chord Fm7 = new Chord(ChromaName.F, ChordType.m7);
-        assertEquals(Fm7, prog.getChord());
-       
         // rotation
         prog.variate();
         assertEquals(C, prog.getChord());
