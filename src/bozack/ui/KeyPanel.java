@@ -10,6 +10,7 @@ import java.awt.Font;
 import bozack.Note;
 import bozack.NoteSet;
 import bozack.NoteHashMap;
+import bozack.DissonanceMap;
 
 public final class KeyPanel extends JPanel {
 
@@ -29,12 +30,18 @@ public final class KeyPanel extends JPanel {
     private final NoteSet assistedNote;
     private final NoteHashMap pickupRelation;
 
+    private DissonanceMap dissonance;
+
     public KeyPanel(NoteSet onNote
         , NoteSet assistedNote, NoteHashMap pickupRelation) {
         this.noteSet = onNote;
         this.assistedNote   = assistedNote;
         this.pickupRelation = pickupRelation;
         this. setBounds(0, 50, WIDTH, HEIGHT);
+    }
+
+    public void setDissonanceMap(DissonanceMap dis) {
+        this.dissonance = dis;
     }
 
     public void paintComponent(Graphics g) {
@@ -67,7 +74,7 @@ public final class KeyPanel extends JPanel {
 
             NoteSet tmpNoteSet = (NoteSet)this.noteSet.clone();
             tmpNoteSet.add(cursorNote);
-            double des = tmpNoteSet.getDessonance();
+            double des = tmpNoteSet.getDessonance(this.dissonance);
             int desIndex = 255 - (int)(255.0d 
                 * (des / (tmpNoteSet.size() * 5)));
             if (desIndex < 0) {

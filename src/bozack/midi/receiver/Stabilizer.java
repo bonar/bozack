@@ -21,7 +21,6 @@ public final class Stabilizer
     public void handleShortMessage(ShortMessage sm, long timeStamp) {
         if (sm.getCommand() == ShortMessage.NOTE_ON
             && sm.getData2() > 0) {
-            System.out.println("note on " + sm.getData1() + " " + sm.getData2());
             this.noteOn(new Note(sm.getData1()), sm.getData2());
             return;
         }
@@ -29,7 +28,6 @@ public final class Stabilizer
             && sm.getData2() == 0) || 
             sm.getCommand() == ShortMessage.NOTE_OFF
             ) {
-            System.out.println("note off " + sm.getData1() + " " + sm.getData2());
             this.noteOff(new Note(sm.getData1()), sm.getData2());
             return;
         }
@@ -65,7 +63,7 @@ public final class Stabilizer
 
             NoteSet tmpNoteSet = (NoteSet)this.assistedOnNote.clone();
             tmpNoteSet.add(cursorNote);
-            double des = tmpNoteSet.getDessonance();
+            double des = tmpNoteSet.getDessonance(this.dissonance);
 
             double neibour_bonus = NEIBOUR_BONUS_RATE * scanRange;
             double total = (des / tmpNoteSet.size()) - neibour_bonus;

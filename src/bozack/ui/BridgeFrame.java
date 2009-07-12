@@ -104,6 +104,7 @@ public final class BridgeFrame extends JFrame {
 
         CustomReceiver recv = new DumpRelay();
         this.receiver = recv;
+        this.receiver.setDissonanceMap(this.dissonance);
         recv.addNoteEventListener(new FramePainter(this));
 
         prog.setValue(2);
@@ -161,6 +162,7 @@ public final class BridgeFrame extends JFrame {
         this.addKeyListener(this.pianoKey);
 
         this.receiver = recv;
+        this.receiver.setDissonanceMap(this.dissonance);
     }
 
     private void connectDevice()
@@ -388,6 +390,10 @@ public final class BridgeFrame extends JFrame {
         this.noteSet = onNote;
         KeyPanel kp = new KeyPanel(this.noteSet
             , assistedNote, pickupRelation);
+        if (null != this.dissonance) {
+            kp.setDissonanceMap(this.dissonance);
+        }
+
         try {
             contentPane.remove(IDX_COMP_KEYPANEL);
         } catch (Exception e) { }

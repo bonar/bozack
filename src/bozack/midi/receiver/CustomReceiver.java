@@ -8,6 +8,7 @@ import bozack.Note;
 import bozack.NoteSet;
 import bozack.NoteList;
 import bozack.NoteHashMap;
+import bozack.DissonanceMap;
 import bozack.midi.event.NoteEventListener;
 
 public class CustomReceiver
@@ -19,6 +20,7 @@ public class CustomReceiver
     protected NoteSet assistedOnNote;
     protected NoteHashMap pickupRelation;
     protected Note lastNote;
+    protected DissonanceMap dissonance;
 
     private ArrayList<NoteEventListener> noteEventListeners
         = new ArrayList<NoteEventListener>();
@@ -32,6 +34,10 @@ public class CustomReceiver
         this.assistedOnNote = new NoteSet();
         this.pickupRelation = new NoteHashMap();
         this.lastNote = null;
+    }
+
+    public void setDissonanceMap(DissonanceMap dis) {
+        this.dissonance = dis;
     }
 
     public NoteSet getOnNote() {
