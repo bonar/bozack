@@ -43,7 +43,6 @@ import bozack.midi.receiver.Stabilizer;
 import bozack.midi.event.FramePainter;
 import bozack.ui.KeyPanel;
 import bozack.ui.ConnectionPanel;
-import bozack.ui.ChordPanel;
 import bozack.ui.AboutDialog;
 import bozack.ui.LayoutDialog;
 
