@@ -1,6 +1,7 @@
 
 package bozack.ui;
 
+import java.net.URL;
 import javax.swing.JFrame;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -13,6 +14,7 @@ import javax.swing.JOptionPane;
 import javax.swing.ButtonGroup;
 import javax.swing.event.MenuListener;
 import javax.swing.event.MenuEvent;
+import javax.swing.ImageIcon;
 import java.util.ArrayList;
 import javax.sound.midi.MidiSystem;
 import javax.sound.midi.MidiDevice;
@@ -23,7 +25,7 @@ import javax.sound.midi.ShortMessage;
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiUnavailableException;
 import java.awt.Container;
-import java.awt.Dimension;
+import java.awt.BorderLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -31,6 +33,7 @@ import java.awt.event.MouseListener;
 import bozack.Note;
 import bozack.NoteSet;
 import bozack.NoteHashMap;
+import bozack.DissonanceMap;
 import bozack.midi.Bridge;
 import bozack.midi.PianoKeyEmulator;
 import bozack.midi.receiver.CustomReceiver;
@@ -58,15 +61,59 @@ public final class BridgeFrame extends JFrame {
     private CustomReceiver receiver;
     private PianoKeyEmulator pianoKey;
 
+    private DissonanceMap dissonance;
+    private static final int DISSONANCE_MAP_MIN = 1;
+    private static final int DISSONANCE_MAP_MAX = 120;
+    
+    private static final String IMAGE_PATH = "splash.png";
+
     public BridgeFrame() {
+        // create splash screen and make large dissonance mapping
+        JDialog splash = new JDialog();
+        splash.setBounds(300, 200, 10, 10);
+
+        URL imageUrl = getClass().getClassLoader()
+            .getResource(IMAGE_PATH);
+        ImageIcon icon = new ImageIcon(imageUrl);
+        JLabel imageLabel = new JLabel(icon);
+        splash.setLayout(new BorderLayout());
+        splash.getContentPane().add(imageLabel, BorderLayout.NORTH);
+
+        JProgressBar prog = new JProgressBar(0, 5);
+        prog.setStringPainted(true);
+        splash.getContentPane().add(prog, BorderLayout.SOUTH);
+        
+        splash.pack();
+        splash.setResizable(false);
+        splash.setVisible(true);
+
+        prog.setValue(0);
+        prog.setString("creating DissonanceMap");
+        // pre-calc all the dissonance patterns
+        this.dissonance = new DissonanceMap();
+        for (int a = DISSONANCE_MAP_MIN; a < DISSONANCE_MAP_MAX; a++) {
+            for (int b = DISSONANCE_MAP_MIN
+                ; b < DISSONANCE_MAP_MAX; b++) {
+                this.dissonance.put(a, b);
+            }
+        }
+        prog.setValue(1);
+        prog.setString("Registering event listeners");
+
         this.setBounds(POS_X, POS_Y, WIDTH, HEIGHT);
 
         CustomReceiver recv = new DumpRelay();
         this.receiver = recv;
         recv.addNoteEventListener(new FramePainter(this));
 
+        prog.setValue(2);
+        prog.setString("Investigating MIDI Devices");
+
         this.bridge = new Bridge();
         ArrayList devices = Bridge.getDevices();
+        
+        prog.setValue(3);
+        prog.setString("Connecting MIDI Devices");
         this.deviceIn  = (MidiDevice)(devices.get(0));
         try {
             this.deviceOut = MidiSystem.getSynthesizer();
@@ -77,6 +124,9 @@ public final class BridgeFrame extends JFrame {
         }
         this.appendMenu();
 
+        prog.setValue(5);
+        prog.setString("Initializing software piano");
+
         this.paintConnectionPanel();
         this.noteSet = new NoteSet();
         this.paintKeyPanel(this.noteSet);
@@ -85,6 +135,7 @@ public final class BridgeFrame extends JFrame {
         this.pianoKey = new PianoKeyEmulator(recv);
         this.addKeyListener(this.pianoKey);
 
+        splash.setVisible(false);
         this.setVisible(true);
     }
 

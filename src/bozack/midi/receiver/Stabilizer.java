@@ -18,7 +18,7 @@ public final class Stabilizer
     private static final double DIRECT_RETURN_BORDER = 0.3d;
     private static final double NEIBOUR_BONUS_RATE   = 0.08d;
 
-    protected void handleShortMessage(ShortMessage sm, long timeStamp) {
+    public void handleShortMessage(ShortMessage sm, long timeStamp) {
         if (sm.getCommand() == ShortMessage.NOTE_ON
             && sm.getData2() > 0) {
             System.out.println("note on " + sm.getData1() + " " + sm.getData2());

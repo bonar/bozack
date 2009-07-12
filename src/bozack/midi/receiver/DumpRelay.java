@@ -12,7 +12,7 @@ public final class DumpRelay
         super();
     }
 
-    protected void handleShortMessage(ShortMessage sm, long timeStamp) {
+    public void handleShortMessage(ShortMessage sm, long timeStamp) {
         if (sm.getCommand() == ShortMessage.NOTE_ON
             && sm.getData2() > 0) {
             Note note = new Note(sm.getData1());
