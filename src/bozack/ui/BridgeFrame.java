@@ -30,7 +30,9 @@ import bozack.midi.receiver.DumpRelay;
 import bozack.midi.receiver.Stabilizer;
 import bozack.midi.event.FramePainter;
 import bozack.ui.KeyPanel;
+import bozack.ui.ConnectionPanel;
 import bozack.ui.AboutDialog;
+import bozack.ui.LayoutDialog;
 
 public final class BridgeFrame extends JFrame {
 
@@ -39,17 +41,20 @@ public final class BridgeFrame extends JFrame {
     private static final int WIDTH  = 1200;
     private static final int HEIGHT = 600;
     private static NoteSet noteSet;
-    private static int IDX_COMP_KEYPANEL = 0;
+    private static int IDX_COMP_CONPANEL = 0;
+    private static int IDX_COMP_KEYPANEL = 1;
 
     private Bridge bridge;
     private MidiDevice deviceIn;
     private Synthesizer deviceOut;
+    private CustomReceiver receiver;
 
     public BridgeFrame() {
         this.setBounds(POS_X, POS_Y, WIDTH, HEIGHT);
         this.appendMenu();
         
-        CustomReceiver recv = new Stabilizer();
+        CustomReceiver recv = new DumpRelay();
+        this.receiver = recv;
         recv.addNoteEventListener(new FramePainter(this));
 
         this.bridge = new Bridge();
@@ -63,6 +68,7 @@ public final class BridgeFrame extends JFrame {
             System.exit(0);
         }
 
+        this.paintConnectionPanel();
         this.noteSet = new NoteSet();
         this.paintKeyPanel(this.noteSet);
 
@@ -130,8 +136,8 @@ public final class BridgeFrame extends JFrame {
         JMenu menuHelp = new JMenu("Help");
         JMenuItem menuHelpAbout = new JMenuItem("About bozack");
         menuHelpAbout.addMouseListener(new HelpAdapter(this));
-        JMenuItem menuHelpKey   = new JMenuItem(
-            "Keyboard layout");
+        JMenuItem menuHelpKey   = new JMenuItem("Keyboard layout");
+        menuHelpKey.addMouseListener(new KeyLayoutAdapter(this));
         menuHelp.add(menuHelpAbout);
         menuHelp.add(menuHelpKey);
 
@@ -150,7 +156,24 @@ public final class BridgeFrame extends JFrame {
         public HelpAdapter(JFrame f) { super(f); }
         public void mouseReleased(MouseEvent e) {
             AboutDialog about = new AboutDialog(this.frame);
+            about.setVisible(true);
         }
+    }
+    private class KeyLayoutAdapter extends MenuAdapter {
+        public KeyLayoutAdapter(JFrame f) { super(f); }
+        public void mouseReleased(MouseEvent e) {
+            LayoutDialog layout = new LayoutDialog(this.frame);
+            layout.setVisible(true);
+        }
+    }
+
+    public void paintConnectionPanel() {
+        Container contentPane = this.getContentPane();
+        ConnectionPanel cp = new ConnectionPanel(
+            this.deviceIn, deviceOut
+            , this.receiver.getClass().getSimpleName());
+        contentPane.add(cp, IDX_COMP_CONPANEL);
+        contentPane.validate();
     }
 
     public void paintKeyPanel (NoteSet onNote) {

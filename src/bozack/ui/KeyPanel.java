@@ -13,8 +13,8 @@ import bozack.NoteHashMap;
 
 public final class KeyPanel extends JPanel {
 
-    private static final int WIDTH  = 950;
-    private static final int HEIGHT = 220;
+    private static final int WIDTH  = 1200;
+    private static final int HEIGHT = 600;
 
     private static final int KEY_WIDTH  = 42;
     private static final int KEY_HEIGHT = 120;
@@ -34,7 +34,7 @@ public final class KeyPanel extends JPanel {
         this.noteSet = onNote;
         this.assistedNote   = assistedNote;
         this.pickupRelation = pickupRelation;
-        this. setBounds(0, 0, WIDTH, HEIGHT);
+        this. setBounds(0, 50, WIDTH, HEIGHT);
     }
 
     public void paintComponent(Graphics g) {
@@ -42,11 +42,11 @@ public final class KeyPanel extends JPanel {
         g.setFont(FONT_KB_LETTER);
 
         int x = 10 + (-1 * KEY_WIDTH);
-        int y_row_height = 0;
+        int y_row_height = 40;
         int x_col_width  = 0;
         for (int note = NOTE_START; note < NOTE_END; note++) {
             if (note >= 60) {
-                y_row_height = 250;
+                y_row_height = 290;
                 x_col_width  = 1175;
             }
             x += KEY_WIDTH;
