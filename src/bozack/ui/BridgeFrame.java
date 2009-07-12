@@ -34,6 +34,7 @@ import bozack.Note;
 import bozack.NoteSet;
 import bozack.NoteHashMap;
 import bozack.DissonanceMap;
+import bozack.ChordProgression;
 import bozack.midi.Bridge;
 import bozack.midi.PianoKeyEmulator;
 import bozack.midi.receiver.CustomReceiver;
@@ -42,6 +43,7 @@ import bozack.midi.receiver.Stabilizer;
 import bozack.midi.event.FramePainter;
 import bozack.ui.KeyPanel;
 import bozack.ui.ConnectionPanel;
+import bozack.ui.ChordPanel;
 import bozack.ui.AboutDialog;
 import bozack.ui.LayoutDialog;
 
@@ -54,6 +56,7 @@ public final class BridgeFrame extends JFrame {
     private static NoteSet noteSet;
     private static int IDX_COMP_CONPANEL = 0;
     private static int IDX_COMP_KEYPANEL = 1;
+    private static int IDX_COMP_CHPANEL  = 2;
 
     private Bridge bridge;
     private MidiDevice deviceIn;
@@ -64,6 +67,8 @@ public final class BridgeFrame extends JFrame {
     private DissonanceMap dissonance;
     private static final int DISSONANCE_MAP_MIN = 1;
     private static final int DISSONANCE_MAP_MAX = 120;
+
+    private ChordProgression chordProg;
     
     private static final String IMAGE_PATH = "splash.png";
 
@@ -128,17 +133,29 @@ public final class BridgeFrame extends JFrame {
         prog.setValue(5);
         prog.setString("Initializing software piano");
 
+        this.chordProg = new ChordProgression();
         this.paintConnectionPanel();
         this.noteSet = new NoteSet();
         this.paintKeyPanel(this.noteSet);
 
         // register Software Keyboard emulation
-        this.pianoKey = new PianoKeyEmulator(recv);
+        this.pianoKey = new PianoKeyEmulator(this, recv);
         this.addKeyListener(this.pianoKey);
 
         splash.setVisible(false);
         this.setVisible(true);
     }
+
+    public void chordNext(int index) {
+        this.chordProg.next();
+        this.chordProg.variate(index);
+        this.paintConnectionPanel();
+    }
+    public void chordVariate() {
+        this.chordProg.variate();
+        this.paintConnectionPanel();
+    }
+
 
     public void setDeviceIn(MidiDevice device) {
         this.deviceIn.close();
@@ -158,7 +175,7 @@ public final class BridgeFrame extends JFrame {
 
         // replace key emulator instance
         this.removeKeyListener(this.pianoKey);
-        this.pianoKey = new PianoKeyEmulator(recv);
+        this.pianoKey = new PianoKeyEmulator(this, recv);
         this.addKeyListener(this.pianoKey);
 
         this.receiver = recv;
@@ -372,7 +389,8 @@ public final class BridgeFrame extends JFrame {
         Container contentPane = this.getContentPane();
         ConnectionPanel cp = new ConnectionPanel(
             this.deviceIn, deviceOut
-            , this.receiver.getClass().getSimpleName());
+            , this.receiver.getClass().getSimpleName()
+            , this.chordProg);
         contentPane.add(cp, IDX_COMP_CONPANEL);
         contentPane.validate();
     }

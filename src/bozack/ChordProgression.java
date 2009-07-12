@@ -5,10 +5,9 @@ import bozack.Chord;
 import bozack.ChordRole;
 import bozack.ChromaName;
 import bozack.ChordType;
-import java.util.ArrayList;
+import bozack.ChordList;
 import java.util.HashMap;
 
-final class ChordList    extends ArrayList<Chord> {}
 final class ChordRoleMap extends HashMap<ChordRole, ChordList> {}
 
 public final class ChordProgression {
@@ -44,11 +43,14 @@ public final class ChordProgression {
 
     public ChordProgression() { }
 
-    private void clearVariateDepth() {
+    public void clearVariateDepth() {
         this.variateDepth = 0;
     }
-    private ChordList getChordList() {
+    public ChordList getChordList() {
         return roleMap.get(this.currentRole);
+    }
+    public ChordList getNextChordList() {
+        return roleMap.get(ChordRole.rotate(this.currentRole));
     }
     public Chord getChord() {
         ChordList list = this.getChordList();
@@ -61,8 +63,15 @@ public final class ChordProgression {
         this.currentRole = ChordRole.rotate(this.currentRole);
     }
     public void variate() {
+        if (0 == ((this.variateDepth + 1) % this.getChordList().size())) {
+            return; // code progression law
+        }
         this.variateDepth++;
     }
+    public void variate(int count) {
+        this.variateDepth += count;
+    }
+
 
 }
 

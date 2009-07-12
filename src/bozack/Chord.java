@@ -82,8 +82,7 @@ public final class Chord {
 
 
     public String toString() {
-        return "Chord:" + this.chromaName
-            + "(" + this.chordType + ")";
+        return "" + this.chromaName + " " + this.chordType;
     }
 
     public boolean equals(Object obj) {

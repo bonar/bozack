@@ -6,6 +6,7 @@ import java.awt.event.KeyListener;
 import javax.sound.midi.ShortMessage;
 import javax.sound.midi.InvalidMidiDataException;
 import bozack.midi.receiver.CustomReceiver;
+import bozack.ui.BridgeFrame;
 import bozack.Note;
 import bozack.NoteSet;
 
@@ -18,8 +19,10 @@ public final class PianoKeyEmulator
     private static final int MIN_OCTAV = 1;
     private static final int MAX_OCTAV = 8;
     private NoteSet onNote;
+    private BridgeFrame frame;
 
-    public PianoKeyEmulator(CustomReceiver recv) {
+    public PianoKeyEmulator(BridgeFrame frame, CustomReceiver recv) {
+        this.frame = frame;
         this.receiver = recv;
         this.onNote = new NoteSet();
     }
@@ -49,6 +52,26 @@ public final class PianoKeyEmulator
         switch(e.getKeyCode()) {
             case KeyEvent.VK_LEFT:  this.dectOctav(); break;
             case KeyEvent.VK_RIGHT: this.incrOctav(); break;
+        }
+
+        {
+            int chordIndex = 0;
+            switch (e.getKeyCode()) {
+                case KeyEvent.VK_F1: chordIndex = 1; break;
+                case KeyEvent.VK_F2: chordIndex = 2; break;
+                case KeyEvent.VK_F3: chordIndex = 3; break;
+                case KeyEvent.VK_F4: chordIndex = 4; break;
+                case KeyEvent.VK_F5: chordIndex = 5; break;
+                case KeyEvent.VK_F6: chordIndex = 6; break;
+                case KeyEvent.VK_F7: chordIndex = 7; break;
+                case KeyEvent.VK_F8: chordIndex = 8; break;
+                case KeyEvent.VK_F9: chordIndex = 9; break;
+                case KeyEvent.VK_1: this.frame.chordVariate(); break;
+            }
+            if (chordIndex > 0) {
+                this.frame.chordNext(chordIndex - 1);
+                return;
+            }
         }
 
         Note inputNote = getNoteByKeyCode(e.getKeyCode(), this.octav);
