@@ -4,19 +4,23 @@ package bozack.midi.receiver;
 import java.util.HashMap;
 import javax.sound.midi.ShortMessage;
 import bozack.midi.receiver.CustomReceiver;
+import bozack.Chord;
+import bozack.ChromaSet;
 import bozack.Note;
 import bozack.NoteSet;
 
 public final class Stabilizer
     extends CustomReceiver {
 
-    public Stabilizer() {
-
+    public Stabilizer() { }
+    public Stabilizer(boolean chordAssist) {
+        this.chordAssist = chordAssist;
     }
 
     private static final int SCAN_RANGE = 8;
     private static final double DIRECT_RETURN_BORDER = 0.3d;
     private static final double NEIBOUR_BONUS_RATE   = 0.08d;
+    private static final double CHORD_BONUS_RATE     = 1.50d;
 
     public void handleShortMessage(ShortMessage sm, long timeStamp) {
         if (sm.getCommand() == ShortMessage.NOTE_ON
@@ -64,6 +68,15 @@ public final class Stabilizer
             NoteSet tmpNoteSet = (NoteSet)this.assistedOnNote.clone();
             tmpNoteSet.add(cursorNote);
             double des = tmpNoteSet.getDessonance(this.dissonance);
+
+            // chord assist bonus
+            if (this.chordAssist() && des < 2.0d) {
+                Chord c = this.chord;
+                ChromaSet chromaSet = c.getChromaSet();
+                if (chromaSet.contains(cursorNote.getChroma())) {
+                    des -=  CHORD_BONUS_RATE;
+                }
+            }
 
             double neibour_bonus = NEIBOUR_BONUS_RATE * scanRange;
             double total = (des / tmpNoteSet.size()) - neibour_bonus;

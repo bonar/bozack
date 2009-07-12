@@ -4,6 +4,7 @@ package bozack.midi.receiver;
 import java.util.ArrayList;
 import java.util.Iterator;
 import javax.sound.midi.*;
+import bozack.Chord;
 import bozack.Note;
 import bozack.NoteSet;
 import bozack.NoteList;
@@ -22,18 +23,28 @@ public class CustomReceiver
     protected Note lastNote;
     protected DissonanceMap dissonance;
 
+    protected Chord chord;
+    protected boolean chordAssist = true;
+
     private ArrayList<NoteEventListener> noteEventListeners
         = new ArrayList<NoteEventListener>();
-    private enum NOTE_EVENT {
-        ON,
-        OFF
-    };
+    private enum NOTE_EVENT { ON, OFF };
 
     public CustomReceiver() {
         this.onNote         = new NoteSet();
         this.assistedOnNote = new NoteSet();
         this.pickupRelation = new NoteHashMap();
         this.lastNote = null;
+    }
+
+    public void setChord(Chord c) {
+        this.chord = c;
+    }
+    public void setChordAssist(boolean b) {
+        this.chordAssist = b;
+    }
+    public boolean chordAssist() {
+        return this.chordAssist;
     }
 
     public void setDissonanceMap(DissonanceMap dis) {

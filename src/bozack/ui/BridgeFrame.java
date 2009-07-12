@@ -133,6 +133,7 @@ public final class BridgeFrame extends JFrame {
         prog.setString("Initializing software piano");
 
         this.chordProg = new ChordProgression();
+        this.receiver.setChord(this.chordProg.getChord());
         this.paintConnectionPanel();
         this.noteSet = new NoteSet();
         this.paintKeyPanel(this.noteSet);
@@ -148,13 +149,14 @@ public final class BridgeFrame extends JFrame {
     public void chordNext(int index) {
         this.chordProg.next();
         this.chordProg.variate(index);
+        this.receiver.setChord(this.chordProg.getChord());
         this.paintConnectionPanel();
     }
     public void chordVariate() {
         this.chordProg.variate();
+        this.receiver.setChord(this.chordProg.getChord());
         this.paintConnectionPanel();
     }
-
 
     public void setDeviceIn(MidiDevice device) {
         this.deviceIn.close();
@@ -178,6 +180,7 @@ public final class BridgeFrame extends JFrame {
         this.addKeyListener(this.pianoKey);
 
         this.receiver = recv;
+        this.receiver.setChord(this.chordProg.getChord());
         this.receiver.setDissonanceMap(this.dissonance);
     }
 
@@ -221,11 +224,17 @@ public final class BridgeFrame extends JFrame {
         JMenuItem menuPropDes = new JRadioButtonMenuItem(
             "Stabilizer");
         menuPropDes.addMouseListener(new ReconnectReceiverAdapter(
-            this, new Stabilizer()));
+            this, new Stabilizer(false)));
+        JMenuItem menuPropDesCh = new JRadioButtonMenuItem(
+            "Stabilizer (with Chord)");
+        menuPropDesCh.addMouseListener(new ReconnectReceiverAdapter(
+            this, new Stabilizer(true)));
         groupProp.add(menuPropSimple);
         groupProp.add(menuPropDes);
+        groupProp.add(menuPropDesCh);
         menuProp.add(menuPropSimple);
         menuProp.add(menuPropDes);
+        menuProp.add(menuPropDesCh);
 
         JMenu menuDevice = new JMenu("MIDI Devices");
         JMenu menuDeviceController = new JMenu("Select Controller");
