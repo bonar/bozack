@@ -2,20 +2,26 @@
 package bozack.ui;
 
 import javax.swing.JFrame;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
+import javax.swing.JProgressBar;
 import javax.swing.JMenuItem;
 import javax.swing.JMenuBar;
 import javax.swing.JRadioButtonMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.ButtonGroup;
 import javax.swing.event.MenuListener;
 import javax.swing.event.MenuEvent;
 import java.util.ArrayList;
 import javax.sound.midi.MidiSystem;
 import javax.sound.midi.MidiDevice;
+import javax.sound.midi.MidiDevice.Info;
 import javax.sound.midi.Sequencer;
 import javax.sound.midi.Synthesizer;
 import javax.sound.midi.MidiUnavailableException;
 import java.awt.Container;
+import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -51,8 +57,7 @@ public final class BridgeFrame extends JFrame {
 
     public BridgeFrame() {
         this.setBounds(POS_X, POS_Y, WIDTH, HEIGHT);
-        this.appendMenu();
-        
+
         CustomReceiver recv = new DumpRelay();
         this.receiver = recv;
         recv.addNoteEventListener(new FramePainter(this));
@@ -62,11 +67,16 @@ public final class BridgeFrame extends JFrame {
         this.deviceIn  = (MidiDevice)(devices.get(0));
         try {
             this.deviceOut = MidiSystem.getSynthesizer();
-            this.connectDevice(recv);
+            this.connectDevice();
         } catch (MidiUnavailableException e) {
             System.err.println(e.getMessage());
             System.exit(0);
         }
+        System.out.println("autoselect in:" +
+            this.deviceIn.getDeviceInfo().getName());
+        System.out.println("autoselect out:" +
+            this.deviceOut.getDeviceInfo().getName());
+        this.appendMenu();
 
         this.paintConnectionPanel();
         this.noteSet = new NoteSet();
@@ -75,12 +85,34 @@ public final class BridgeFrame extends JFrame {
         // register Software Keyboard emulation
         this.addKeyListener(new PianoKeyEmulator(recv));
 
+
         this.setVisible(true);
     }
 
-    private void connectDevice(CustomReceiver recv) 
+    public void setDeviceIn(MidiDevice device) {
+        this.deviceIn.close();
+        this.deviceIn = device;
+    }
+
+    public void setDeviceOut(Synthesizer device) {
+        this.deviceOut.close();
+        this.deviceOut = device;
+    }
+
+    public void setReciever(CustomReceiver recv) {
+        this.receiver = recv;
+    }
+
+    private void connectDevice()
         throws MidiUnavailableException {
-        this.bridge.connect(this.deviceIn, this.deviceOut, recv);
+
+        this.bridge.connect(this.deviceIn, this.deviceOut
+            , this.receiver);
+        this.paintConnectionPanel();
+
+        System.out.println("reconnected.");
+        System.out.println("IN:" + this.deviceIn.getDeviceInfo().getName());
+        System.out.println("OUT:" + this.deviceOut.getDeviceInfo().getName());
     }
 
     private void appendMenu() {
@@ -107,6 +139,8 @@ public final class BridgeFrame extends JFrame {
         // scan controller and synthesizer
         ButtonGroup groupController  = new ButtonGroup();
         ButtonGroup groupSynthesizer = new ButtonGroup();
+        MidiDevice.Info infoDeviceIn  = this.deviceIn.getDeviceInfo();
+        MidiDevice.Info infoDeviceOut = this.deviceOut.getDeviceInfo();
         MidiDevice.Info[] info = MidiSystem.getMidiDeviceInfo();
         ArrayList<MidiDevice> synth = new ArrayList<MidiDevice>();
         for (int i = 0; i < info.length; i++) {
@@ -116,14 +150,25 @@ public final class BridgeFrame extends JFrame {
             } catch (MidiUnavailableException e) {
                 continue;
             }
+            boolean checked = false;
+            if (info[i].toString().equals(infoDeviceIn.toString())
+                || info[i].toString().equals(infoDeviceOut.toString())) {
+                System.out.println("match!-" + info[i].getName());
+                checked = true;
+            }
             JMenuItem menuItem = new JRadioButtonMenuItem(
-                info[i].getVendor() + " - " + info[i].getName());
+                info[i].getName() + " / " + info[i].getVendor()
+                , checked);
 
             if (device instanceof Synthesizer) {
+                menuItem.addMouseListener(
+                    new ReconnectDeviceOutAdapter(this, device));
                 groupSynthesizer.add(menuItem);
                 menuDeviceSynth.add(menuItem);
             }
             else {
+                menuItem.addMouseListener(
+                    new ReconnectDeviceInAdapter(this, device));
                 groupController.add(menuItem);
                 menuDeviceController.add(menuItem);
             }
@@ -148,22 +193,73 @@ public final class BridgeFrame extends JFrame {
         this.setJMenuBar(menuBar);
     }
 
+    // Mouse Event Listeners
     protected class MenuAdapter extends MouseAdapter {
-        protected JFrame frame;
-        public MenuAdapter(JFrame f) { this.frame = f; }
+        protected BridgeFrame frame;
+        public MenuAdapter(BridgeFrame f) { this.frame = f; }
     }
     private class HelpAdapter extends MenuAdapter {
-        public HelpAdapter(JFrame f) { super(f); }
+        public HelpAdapter(BridgeFrame f) { super(f); }
         public void mouseReleased(MouseEvent e) {
             AboutDialog about = new AboutDialog(this.frame);
             about.setVisible(true);
         }
     }
     private class KeyLayoutAdapter extends MenuAdapter {
-        public KeyLayoutAdapter(JFrame f) { super(f); }
+        public KeyLayoutAdapter(BridgeFrame f) { super(f); }
         public void mouseReleased(MouseEvent e) {
             LayoutDialog layout = new LayoutDialog(this.frame);
             layout.setVisible(true);
+        }
+    }
+    protected class ReconnectDeviceAdapter extends MouseAdapter {
+        protected BridgeFrame frame;
+        protected MidiDevice device;
+        public ReconnectDeviceAdapter(BridgeFrame f, MidiDevice d) {
+            this.frame  = f;
+            this.device = d;
+        }
+    }
+    private class ReconnectDeviceInAdapter
+        extends ReconnectDeviceAdapter {
+        ReconnectDeviceInAdapter(BridgeFrame f, MidiDevice d) {
+            super(f, d);
+        }
+        public void mouseReleased(MouseEvent e) {
+            System.out.println("ReconnectDeviceInAdapter called");
+            try {
+                this.frame.setDeviceIn(this.device);
+                this.frame.connectDevice();
+            } catch (MidiUnavailableException mue) {
+                JOptionPane.showMessageDialog(this.frame
+                   , "Device not available: " + mue.getMessage()
+                   , "Device Error"
+                   , JOptionPane.WARNING_MESSAGE);
+            }
+        }
+    }
+    private class ReconnectDeviceOutAdapter
+        extends ReconnectDeviceAdapter {
+        ReconnectDeviceOutAdapter(BridgeFrame f, MidiDevice d) {
+            super(f, d);
+        }
+        public void mouseReleased(MouseEvent e) {
+            if (false == this.device instanceof Synthesizer) {
+                JOptionPane.showMessageDialog(this.frame
+                   , "This device is not a Synthesizer"
+                   , "Device Error"
+                   , JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            try {
+                this.frame.setDeviceOut((Synthesizer)this.device);
+                this.frame.connectDevice();
+            } catch (MidiUnavailableException mue) {
+                JOptionPane.showMessageDialog(this.frame
+                   , "Device not available: " + mue.getMessage()
+                   , "Device Error"
+                   , JOptionPane.WARNING_MESSAGE);
+            }
         }
     }
 
