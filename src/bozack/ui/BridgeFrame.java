@@ -16,6 +16,9 @@ import javax.sound.midi.Sequencer;
 import javax.sound.midi.Synthesizer;
 import javax.sound.midi.MidiUnavailableException;
 import java.awt.Container;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 import bozack.Note;
 import bozack.NoteSet;
@@ -27,9 +30,9 @@ import bozack.midi.receiver.DumpRelay;
 import bozack.midi.receiver.Stabilizer;
 import bozack.midi.event.FramePainter;
 import bozack.ui.KeyPanel;
+import bozack.ui.AboutDialog;
 
-public final class BridgeFrame extends JFrame 
-    implements MenuListener {
+public final class BridgeFrame extends JFrame {
 
     private static final int POS_X  = 60;
     private static final int POS_Y  = 10;
@@ -79,6 +82,11 @@ public final class BridgeFrame extends JFrame
         ButtonGroup groupProp  = new ButtonGroup();
         JMenuItem menuPropSimpe = new JRadioButtonMenuItem(
             "Simple Relay", true);
+        menuPropSimpe.addMouseListener(new MouseAdapter() {
+            public void mousePressed(MouseEvent e) {
+                System.out.println("Simple Relay Clicked");
+            }
+        });
         JMenuItem menuPropDes = new JRadioButtonMenuItem(
             "Avoid Dessonance");
         groupProp.add(menuPropSimpe);
@@ -114,23 +122,37 @@ public final class BridgeFrame extends JFrame
                 menuDeviceController.add(menuItem);
             }
         }
+
         menuDevice.add(menuDeviceController);
         menuDevice.add(menuDeviceSynth);
         menuDevice.add("Select Foot Device");
 
+        JMenu menuHelp = new JMenu("Help");
+        JMenuItem menuHelpAbout = new JMenuItem("About bozack");
+        menuHelpAbout.addMouseListener(new HelpAdapter(this));
+        JMenuItem menuHelpKey   = new JMenuItem(
+            "Keyboard layout");
+        menuHelp.add(menuHelpAbout);
+        menuHelp.add(menuHelpKey);
+
         JMenuBar menuBar = new JMenuBar();
         menuBar.add(menuProp);
         menuBar.add(menuDevice);
+        menuBar.add(menuHelp);
         this.setJMenuBar(menuBar);
     }
 
-    public void menuCanceled(MenuEvent e)   { }
-    public void menuDeselected(MenuEvent e) { }
-
-    public void menuSelected(MenuEvent e) {
-
+    protected class MenuAdapter extends MouseAdapter {
+        protected JFrame frame;
+        public MenuAdapter(JFrame f) { this.frame = f; }
     }
-    
+    private class HelpAdapter extends MenuAdapter {
+        public HelpAdapter(JFrame f) { super(f); }
+        public void mouseReleased(MouseEvent e) {
+            AboutDialog about = new AboutDialog(this.frame);
+        }
+    }
+
     public void paintKeyPanel (NoteSet onNote) {
         this.paintKeyPanel(onNote, new NoteSet(), new NoteHashMap());
     }

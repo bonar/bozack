@@ -20,8 +20,8 @@
     <javac srcdir="test" classpathref="run.cp" destdir="classes"/>
   </target>
  
-  <target name="run" depends="compile">
-    <java classname="StartBozack" classpath="classes" fork="yes"/>
+  <target name="run" depends="jar">
+    <java jar="bozack.jar" classpath="classes" fork="yes"/>
   </target>
 
   <!-- test -->
