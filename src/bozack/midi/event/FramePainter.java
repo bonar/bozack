@@ -51,11 +51,6 @@ public class FramePainter implements NoteEventListener {
                 }
             }
         }
-        
-        System.out.println("<control>----------------");
-        CustomReceiver.dumpMessage(message);
-        System.out.println("</control>----------------");
-
     }
 }
 

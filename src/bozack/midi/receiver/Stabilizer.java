@@ -17,9 +17,9 @@ public final class Stabilizer
         this.chordAssist = chordAssist;
     }
 
-    private static final int SCAN_RANGE = 8;
+    private static final int SCAN_RANGE = 9;
     private static final double DIRECT_RETURN_BORDER = 0.3d;
-    private static final double NEIBOUR_BONUS_RATE   = 0.08d;
+    private static final double NEIBOUR_BONUS_RATE   = 0.02d;
     private static final double CHORD_BONUS_RATE     = 1.50d;
 
     public void handleShortMessage(ShortMessage sm, long timeStamp) {
@@ -70,11 +70,13 @@ public final class Stabilizer
             double des = tmpNoteSet.getDessonance(this.dissonance);
 
             // chord assist bonus
-            if (this.chordAssist() && des < 2.0d) {
+            if (this.chordAssist()) {
                 Chord c = this.chord;
                 ChromaSet chromaSet = c.getChromaSet();
-                if (chromaSet.contains(cursorNote.getChroma())) {
-                    des -=  CHORD_BONUS_RATE;
+                if (chromaSet.contains(
+                    new Integer(cursorNote.getChroma()))) {
+                    System.out.println("match " + cursorNote.getChroma());
+                    des -= CHORD_BONUS_RATE;
                 }
             }
 

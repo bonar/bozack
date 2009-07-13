@@ -1,6 +1,6 @@
 
 package bozack;
-import java.util.LinkedHashSet;
+import java.util.HashSet;
 
-public final class ChromaSet extends LinkedHashSet<Integer> {}
+public final class ChromaSet extends HashSet<Integer> {}
 
