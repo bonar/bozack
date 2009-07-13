@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import javax.sound.midi.MidiSystem;
 import javax.sound.midi.MidiDevice;
 import javax.sound.midi.MidiDevice.Info;
+import javax.sound.midi.Transmitter;
 import javax.sound.midi.Sequencer;
 import javax.sound.midi.Synthesizer;
 import javax.sound.midi.ShortMessage;
@@ -239,6 +240,7 @@ public final class BridgeFrame extends JFrame {
         JMenu menuDevice = new JMenu("MIDI Devices");
         JMenu menuDeviceController = new JMenu("Select Controller");
         JMenu menuDeviceSynth      = new JMenu("Select Synthesizer");
+        JMenu menuDeviceFoot = new JMenu("Select Foot Control Device");
 
         // scan controller and synthesizer
         ButtonGroup groupController  = new ButtonGroup();
@@ -275,12 +277,19 @@ public final class BridgeFrame extends JFrame {
                     new ReconnectDeviceInAdapter(this, device));
                 groupController.add(menuItem);
                 menuDeviceController.add(menuItem);
+
+                // add Foot Controll option
+                JMenuItem menuItemFoot = new JRadioButtonMenuItem(
+                    info[i].getName() + " / " + info[i].getVendor());
+                menuItemFoot.addMouseListener(
+                    new DeviceFootAdapter(this, this.receiver, device));
+                menuDeviceFoot.add(menuItemFoot);
             }
         }
 
         menuDevice.add(menuDeviceController);
         menuDevice.add(menuDeviceSynth);
-        menuDevice.add("Select Foot Device");
+        menuDevice.add(menuDeviceFoot);
 
         JMenu menuHelp = new JMenu("Help");
         JMenuItem menuHelpAbout = new JMenuItem("About bozack");
@@ -370,6 +379,31 @@ public final class BridgeFrame extends JFrame {
             }
         }
     }
+    private class DeviceFootAdapter
+        extends MouseAdapter {
+        private BridgeFrame frame;
+        private CustomReceiver receiver;
+        private MidiDevice device;
+        DeviceFootAdapter(BridgeFrame f, CustomReceiver r, MidiDevice d) {
+            this.frame    = f;
+            this.receiver = r;
+            this.device   = d;
+        }
+        public void mouseReleased(MouseEvent e) {
+            try {
+                this.frame.midiBeep(90);
+                Transmitter trans = this.device.getTransmitter();
+                trans.setReceiver(this.receiver);
+                this.frame.midiBeep(95);
+            } catch (MidiUnavailableException mue) {
+                JOptionPane.showMessageDialog(this.frame
+                   , "Device not available: " + mue.getMessage()
+                   , "Device Error"
+                   , JOptionPane.WARNING_MESSAGE);
+            }
+        }
+    }
+
     protected class ReconnectReceiverAdapter extends MouseAdapter {
         private BridgeFrame frame;
         private CustomReceiver receiver;

@@ -1,6 +1,8 @@
 
 package bozack.midi.event;
 
+import javax.sound.midi.MidiMessage;
+import javax.sound.midi.ShortMessage;
 import bozack.ui.BridgeFrame;
 import bozack.midi.event.NoteEventListener;
 import bozack.midi.receiver.CustomReceiver;
@@ -24,6 +26,36 @@ public class FramePainter implements NoteEventListener {
         this.frame.paintKeyPanel(recv.getOnNote()
             , recv.getAssistedOnNote()
             , recv.getPickupRelation());
+    }
+
+    public void performControl(CustomReceiver recv, MidiMessage message) {
+        if (message instanceof ShortMessage) {
+            ShortMessage sm = (ShortMessage)message;
+            if (sm.getStatus() == 176) {
+                switch (sm.getData1()) {
+                    case 1:
+                        this.frame.chordNext(0);
+                        break;
+                    case 2:
+                        this.frame.chordNext(1);
+                        break;
+                    case 3:
+                        this.frame.chordNext(2);
+                        break;
+                    case 4:
+                        this.frame.chordNext(3);
+                        break;
+                    case 5:
+                        this.frame.chordNext(4);
+                        break;
+                }
+            }
+        }
+        
+        System.out.println("<control>----------------");
+        CustomReceiver.dumpMessage(message);
+        System.out.println("</control>----------------");
+
     }
 }
 

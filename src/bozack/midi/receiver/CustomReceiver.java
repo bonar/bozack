@@ -114,6 +114,9 @@ public class CustomReceiver
                     this.performNoteEvent(new Note(sm.getData1())
                         , NOTE_EVENT.OFF);
                     break;
+                default:
+                    this.performControlEvent(message);
+                    break;
             }
             return;
         }
@@ -162,6 +165,17 @@ public class CustomReceiver
                 listener.performOffNote(this, lastNote);
             }
 
+        }
+    }
+
+    private void performControlEvent(MidiMessage message) {
+         if (0 == this.noteEventListeners.size()) {
+            return;
+        }
+        Iterator iter = this.noteEventListeners.iterator();
+        while (iter.hasNext()) {
+            NoteEventListener listener = (NoteEventListener)iter.next();
+            listener.performControl(this, message);
         }
     }
 }
