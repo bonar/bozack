@@ -17,9 +17,9 @@ public final class Stabilizer
         this.chordAssist = chordAssist;
     }
 
-    private static final int SCAN_RANGE = 9;
-    private static final double DIRECT_RETURN_BORDER = 0.3d;
-    private static final double NEIBOUR_BONUS_RATE   = 0.02d;
+    private static final int SCAN_RANGE = 7;
+    private static final double DIRECT_RETURN_BORDER = 0.2d;
+    private static final double NEIBOUR_BONUS_RATE   = 0.06d;
     private static final double CHORD_BONUS_RATE     = 1.50d;
 
     public void handleShortMessage(ShortMessage sm, long timeStamp) {
@@ -52,7 +52,7 @@ public final class Stabilizer
         if (0 == this.assistedOnNote.size()) {
             return note;
         }
-        int cursorMove = 1;
+        int cursorMove = -1;
         if (null == this.lastNote
             || note.getNote() > this.lastNote.getNote()) {
             cursorMove = 1;
