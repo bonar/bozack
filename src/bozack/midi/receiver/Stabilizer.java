@@ -17,10 +17,14 @@ public final class Stabilizer
         this.chordAssist = chordAssist;
     }
 
-    private static final int SCAN_RANGE = 7;
+    private static final double MIN_DIS_DEFAULT = 100.0d;
+    private static final double MIN_DIS_PLAY    = 3.0d;
+    private static final int MIN_INTERVAL = 3;
+
+    private static final int SCAN_RANGE = 6;
     private static final double DIRECT_RETURN_BORDER = 0.2d;
-    private static final double NEIBOUR_BONUS_RATE   = 0.06d;
-    private static final double CHORD_BONUS_RATE     = 1.50d;
+    private static final double NEIBOUR_BONUS_RATE   = 0.10d;
+    private static final double CHORD_BONUS_RATE     = 0.20d;
 
     public void handleShortMessage(ShortMessage sm, long timeStamp) {
         if (sm.getCommand() == ShortMessage.NOTE_ON
@@ -49,7 +53,9 @@ public final class Stabilizer
     }
 
     private Note pickup(Note note) {
-        if (0 == this.assistedOnNote.size()) {
+        System.out.println("---------------------------");
+        if (!this.chordAssist()
+            && 0 == this.assistedOnNote.size()) {
             return note;
         }
         int cursorMove = -1;
@@ -60,31 +66,48 @@ public final class Stabilizer
 
         int scanRange = SCAN_RANGE;
         int tmpNote = note.getNote();
-        double minDes = 100.0d;
+        double minDes = MIN_DIS_DEFAULT;
         int minDesNote = note.getNote();
+
+        SEARCH_NOTE:
         while (0 != scanRange--) {
             Note cursorNote = new Note(tmpNote);
 
+            // minimum interval check
             NoteSet tmpNoteSet = (NoteSet)this.assistedOnNote.clone();
+            for (Note n : tmpNoteSet) {
+                int diff = Math.abs(cursorNote.getNote() - n.getNote());
+                if (diff < MIN_INTERVAL) {
+                    System.out.println("[" + tmpNote + "] too small interval");
+                    tmpNote += cursorMove;
+                    continue SEARCH_NOTE;
+                }
+            }
+
             tmpNoteSet.add(cursorNote);
-            double des = tmpNoteSet.getDessonance(this.dissonance);
+            double desTotal = tmpNoteSet.getDessonance(this.dissonance);
+            double des      = (desTotal / tmpNoteSet.size());
 
             // chord assist bonus
-            if (this.chordAssist()) {
+            double chord_bonus = 0.0d;
+            if (this.chordAssist() && des < MIN_DIS_PLAY) {
                 Chord c = this.chord;
                 ChromaSet chromaSet = c.getChromaSet();
                 if (chromaSet.contains(
                     new Integer(cursorNote.getChroma()))) {
-                    System.out.println("match " + cursorNote.getChroma());
-                    des -= CHORD_BONUS_RATE;
+                    chord_bonus = CHORD_BONUS_RATE * scanRange;
                 }
             }
 
             double neibour_bonus = NEIBOUR_BONUS_RATE * scanRange;
-            double total = (des / tmpNoteSet.size()) - neibour_bonus;
+            double total = des - neibour_bonus - chord_bonus;
+            System.out.println("[" + tmpNote + "] score = basedis:" + des
+                + " neibour:" + neibour_bonus
+                + " chord:" + chord_bonus
+                + " total:" + total);
 
             if (!this.assistedOnNote.contains(cursorNote) &&
-                total < DIRECT_RETURN_BORDER) {
+                des < DIRECT_RETURN_BORDER) {
                 return new Note(tmpNote);
             }
 
@@ -94,6 +117,10 @@ public final class Stabilizer
                 minDes = total;
             }
             tmpNote += cursorMove;
+        }
+
+        if (MIN_DIS_DEFAULT == minDes) {
+            return null; // No note was selected
         }
         return new Note(minDesNote);
     }
