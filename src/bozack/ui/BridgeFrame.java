@@ -42,6 +42,7 @@ import bozack.midi.receiver.CustomReceiver;
 import bozack.midi.receiver.DumpRelay;
 import bozack.midi.receiver.Stabilizer;
 import bozack.midi.event.FramePainter;
+import bozack.midi.event.PedalListener;
 import bozack.ui.KeyPanel;
 import bozack.ui.ConnectionPanel;
 import bozack.ui.AboutDialog;
@@ -111,6 +112,7 @@ public final class BridgeFrame extends JFrame {
         this.receiver = recv;
         this.receiver.setDissonanceMap(this.dissonance);
         recv.addNoteEventListener(new FramePainter(this));
+        recv.addNoteEventListener(new PedalListener(this));
 
         prog.setValue(2);
         prog.setString("Investigating MIDI Devices");
@@ -174,6 +176,7 @@ public final class BridgeFrame extends JFrame {
         this.deviceOut.close();
 
         recv.addNoteEventListener(new FramePainter(this));
+        recv.addNoteEventListener(new PedalListener(this));
 
         // replace key emulator instance
         this.removeKeyListener(this.pianoKey);

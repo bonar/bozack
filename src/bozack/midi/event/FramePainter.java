@@ -7,7 +7,6 @@ import bozack.ui.BridgeFrame;
 import bozack.midi.event.NoteEventListener;
 import bozack.midi.receiver.CustomReceiver;
 import bozack.Note;
-import bozack.NoteSet;
 
 public class FramePainter implements NoteEventListener {
     private final BridgeFrame frame;
@@ -28,29 +27,8 @@ public class FramePainter implements NoteEventListener {
             , recv.getPickupRelation());
     }
 
-    public void performControl(CustomReceiver recv, MidiMessage message) {
-        if (message instanceof ShortMessage) {
-            ShortMessage sm = (ShortMessage)message;
-            if (sm.getStatus() == 176) {
-                switch (sm.getData1()) {
-                    case 1:
-                        this.frame.chordNext(0);
-                        break;
-                    case 2:
-                        this.frame.chordNext(1);
-                        break;
-                    case 3:
-                        this.frame.chordNext(2);
-                        break;
-                    case 4:
-                        this.frame.chordNext(3);
-                        break;
-                    case 5:
-                        this.frame.chordNext(4);
-                        break;
-                }
-            }
-        }
-    }
+    public void performControl(
+        CustomReceiver recv, MidiMessage message) { }
+
 }
 
