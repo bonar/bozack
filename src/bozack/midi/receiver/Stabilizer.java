@@ -77,7 +77,8 @@ public final class Stabilizer
         while (0 != scanRange--) {
             Note cursorNote = new Note(tmpNote);
 
-            if (note.getNote() != this.lastNote.getNote()
+            if (this.lastNote != null
+                && note.getNote() != this.lastNote.getNote()
                 && note.getNote() == tmpNote
                 && !first
             ) {
@@ -88,8 +89,13 @@ public final class Stabilizer
             first = false;
 
             // minimum interval check
-            NoteSet tmpNoteSet = (NoteSet)this.assistedOnNote.clone();
-            tmpNoteSet.addAll((NoteSet)this.sequencerOnNote.clone());
+            NoteSet tmpNoteSet   = (NoteSet)this.assistedOnNote.clone();
+            NoteSet sequencerSet = (NoteSet)this.sequencerOnNote.clone();
+            // Unison with Sequencer press
+            if (sequencerSet.contains(cursorNote)) {
+                return cursorNote;
+            }
+            tmpNoteSet.addAll(sequencerSet);
 
             for (Note n : tmpNoteSet) {
                 int diff = Math.abs(cursorNote.getNote() - n.getNote());

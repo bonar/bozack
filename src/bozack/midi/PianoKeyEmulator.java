@@ -13,7 +13,7 @@ import bozack.NoteSet;
 public final class PianoKeyEmulator
     implements KeyListener {
 
-    private static final int VELOCITY = 65;
+    private static final int VELOCITY = 90;
     private final CustomReceiver receiver;
     private int octav = 4;
     private static final int MIN_OCTAV = 1;
