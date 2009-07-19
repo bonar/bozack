@@ -21,9 +21,9 @@ public final class Stabilizer
     private static final double MIN_DIS_PLAY    = 3.0d;
     private static final int MIN_INTERVAL = 3;
 
-    private static final int SCAN_RANGE = 6;
+    private static final int SCAN_RANGE = 8;
     private static final double DIRECT_RETURN_BORDER = 0.2d;
-    private static final double NEIBOUR_BONUS_RATE   = 0.10d;
+    private static final double NEIBOUR_BONUS_RATE   = 0.15d;
     private static final double CHORD_BONUS_RATE     = 0.20d;
 
     public void handleShortMessage(ShortMessage sm, long timeStamp) {
@@ -53,7 +53,6 @@ public final class Stabilizer
     }
 
     private Note pickup(Note note) {
-        System.out.println("---------------------------");
         if (!this.chordAssist()
             && 0 == this.assistedOnNote.size()
             && 0 == this.sequencerOnNote.size()
@@ -71,17 +70,31 @@ public final class Stabilizer
         double minDes = MIN_DIS_DEFAULT;
         int minDesNote = note.getNote();
 
+        boolean first = true;
+        System.out.println("---------------------------");
+
         SEARCH_NOTE:
         while (0 != scanRange--) {
             Note cursorNote = new Note(tmpNote);
 
+            if (note.getNote() != this.lastNote.getNote()
+                && note.getNote() == tmpNote
+                && !first
+            ) {
+                System.out.println("same note - " + tmpNote);
+                tmpNote += cursorMove;
+                continue SEARCH_NOTE;
+            }
+            first = false;
+
             // minimum interval check
             NoteSet tmpNoteSet = (NoteSet)this.assistedOnNote.clone();
             tmpNoteSet.addAll((NoteSet)this.sequencerOnNote.clone());
-            System.out.println(tmpNoteSet.size());
+
             for (Note n : tmpNoteSet) {
                 int diff = Math.abs(cursorNote.getNote() - n.getNote());
                 if (diff < MIN_INTERVAL) {
+                    System.out.println("too near - " + n.getNote());
                     tmpNote += cursorMove;
                     continue SEARCH_NOTE;
                 }

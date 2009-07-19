@@ -20,6 +20,7 @@ public class CustomReceiver
     protected NoteSet onNote;
     protected NoteSet assistedOnNote;
     protected NoteSet sequencerOnNote;
+    private ArrayList<Note> sequencerNoteList;
     protected NoteHashMap pickupRelation;
     protected Note lastNote;
     protected DissonanceMap dissonance;
@@ -35,6 +36,7 @@ public class CustomReceiver
         this.onNote          = new NoteSet();
         this.assistedOnNote  = new NoteSet();
         this.sequencerOnNote = new NoteSet();
+        this.sequencerNoteList = new ArrayList<Note>();
         this.pickupRelation  = new NoteHashMap();
         this.lastNote = null;
     }
@@ -66,11 +68,15 @@ public class CustomReceiver
     }
 
     public void sequencerNoteOn(int note) {
-        this.sequencerOnNote.add(new Note(note));
-        for (Note n : this.sequencerOnNote) {
-            System.out.print("[" + n.toString() + "]");
+        this.sequencerNoteList.add(new Note(note));
+        if (this.sequencerNoteList.size() > 5) {
+            this.sequencerNoteList.remove(0);
         }
-        System.out.println("");
+        NoteSet newNotes = new NoteSet();
+        for (Note n : this.sequencerNoteList) {
+            newNotes.add(n);
+        }
+        this.sequencerOnNote = newNotes;
     }
     public void sequencerNoteOff(int note) {
         this.sequencerOnNote.remove(new Note(note));

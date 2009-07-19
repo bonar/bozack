@@ -157,6 +157,7 @@ public final class BridgeFrame extends JFrame {
         this.addKeyListener(this.pianoKey);
 
         splash.setVisible(false);
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setVisible(true);
     }
 
