@@ -476,7 +476,7 @@ public final class BridgeFrame extends JFrame {
             try {
                 Transmitter tran = this.frame.sequencer.getTransmitter();
                 tran.setReceiver(new SequenceReceiver(
-                    this.frame.receiver));
+                    this.frame.receiver, this.frame));
             } catch (MidiUnavailableException mue) {
                 JOptionPane.showMessageDialog(this.frame
                    , "Cannot get transmitter from sequencer: "

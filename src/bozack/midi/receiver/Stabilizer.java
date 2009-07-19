@@ -55,7 +55,9 @@ public final class Stabilizer
     private Note pickup(Note note) {
         System.out.println("---------------------------");
         if (!this.chordAssist()
-            && 0 == this.assistedOnNote.size()) {
+            && 0 == this.assistedOnNote.size()
+            && 0 == this.sequencerOnNote.size()
+        ) {
             return note;
         }
         int cursorMove = -1;
@@ -75,10 +77,11 @@ public final class Stabilizer
 
             // minimum interval check
             NoteSet tmpNoteSet = (NoteSet)this.assistedOnNote.clone();
+            tmpNoteSet.addAll((NoteSet)this.sequencerOnNote.clone());
+            System.out.println(tmpNoteSet.size());
             for (Note n : tmpNoteSet) {
                 int diff = Math.abs(cursorNote.getNote() - n.getNote());
                 if (diff < MIN_INTERVAL) {
-                    System.out.println("[" + tmpNote + "] too small interval");
                     tmpNote += cursorMove;
                     continue SEARCH_NOTE;
                 }
@@ -101,10 +104,11 @@ public final class Stabilizer
 
             double neibour_bonus = NEIBOUR_BONUS_RATE * scanRange;
             double total = des - neibour_bonus - chord_bonus;
-            System.out.println("[" + tmpNote + "] score = basedis:" + des
+            System.out.println("[" + tmpNote 
+                + "] score = basedis:" + des
                 + " neibour:" + neibour_bonus
                 + " chord:" + chord_bonus
-                + " total:" + total);
+                + " total:" + total); 
 
             if (!this.assistedOnNote.contains(cursorNote) &&
                 des < DIRECT_RETURN_BORDER) {

@@ -96,6 +96,10 @@ public final class KeyPanel extends JPanel {
                 g.fillRect((x - x_col_width), y, KEY_WIDTH, KEY_HEIGHT);
                 isOnNote = true;
             }
+            else if (this.sequencerNote.contains(cursorNote)) {
+                g.setColor(Color.magenta.brighter());
+                g.fillRect((x - x_col_width), y, KEY_WIDTH, KEY_HEIGHT);
+            }
             else {
                 Color heatColor = new Color(255, desIndex, desIndex);
                 g.setColor(heatColor);
