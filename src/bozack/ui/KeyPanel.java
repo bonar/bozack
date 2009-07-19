@@ -29,14 +29,20 @@ public final class KeyPanel extends JPanel {
     private final NoteSet noteSet;
     private final NoteSet assistedNote;
     private final NoteHashMap pickupRelation;
+    private final NoteSet sequencerNote;
 
     private DissonanceMap dissonance;
 
-    public KeyPanel(NoteSet onNote
-        , NoteSet assistedNote, NoteHashMap pickupRelation) {
+    public KeyPanel(
+          NoteSet onNote
+        , NoteSet assistedNote
+        , NoteHashMap pickupRelation
+        , NoteSet sequencerNote
+    ) {
         this.noteSet = onNote;
         this.assistedNote   = assistedNote;
         this.pickupRelation = pickupRelation;
+        this.sequencerNote  = sequencerNote;
         this. setBounds(0, 50, WIDTH, HEIGHT);
     }
 

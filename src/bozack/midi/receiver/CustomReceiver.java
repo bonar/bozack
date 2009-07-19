@@ -19,6 +19,7 @@ public class CustomReceiver
     protected MidiChannel defaultChannel;
     protected NoteSet onNote;
     protected NoteSet assistedOnNote;
+    protected NoteSet sequencerOnNote;
     protected NoteHashMap pickupRelation;
     protected Note lastNote;
     protected DissonanceMap dissonance;
@@ -31,9 +32,10 @@ public class CustomReceiver
     private enum NOTE_EVENT { ON, OFF };
 
     public CustomReceiver() {
-        this.onNote         = new NoteSet();
-        this.assistedOnNote = new NoteSet();
-        this.pickupRelation = new NoteHashMap();
+        this.onNote          = new NoteSet();
+        this.assistedOnNote  = new NoteSet();
+        this.sequencerOnNote = new NoteSet();
+        this.pickupRelation  = new NoteHashMap();
         this.lastNote = null;
     }
 
@@ -57,6 +59,21 @@ public class CustomReceiver
 
     public NoteSet getAssistedOnNote() {
         return (NoteSet)this.assistedOnNote.clone();
+    }
+
+    public NoteSet getSequencerOnNote() {
+        return (NoteSet)this.sequencerOnNote.clone();
+    }
+
+    public void sequencerNoteOn(int note) {
+        this.sequencerOnNote.add(new Note(note));
+        for (Note n : this.sequencerOnNote) {
+            System.out.print("[" + n.toString() + "]");
+        }
+        System.out.println("");
+    }
+    public void sequencerNoteOff(int note) {
+        this.sequencerOnNote.remove(new Note(note));
     }
 
     public NoteHashMap getPickupRelation() {

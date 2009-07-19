@@ -475,7 +475,8 @@ public final class BridgeFrame extends JFrame {
 
             try {
                 Transmitter tran = this.frame.sequencer.getTransmitter();
-                tran.setReceiver(new SequenceReceiver());
+                tran.setReceiver(new SequenceReceiver(
+                    this.frame.receiver));
             } catch (MidiUnavailableException mue) {
                 JOptionPane.showMessageDialog(this.frame
                    , "Cannot get transmitter from sequencer: "
@@ -526,18 +527,20 @@ public final class BridgeFrame extends JFrame {
     }
 
     public void paintKeyPanel (NoteSet onNote) {
-        this.paintKeyPanel(onNote, new NoteSet(), new NoteHashMap());
+        this.paintKeyPanel(onNote, new NoteSet()
+            , new NoteHashMap(), new NoteSet());
     }
 
     public void paintKeyPanel (
         NoteSet onNote,
         NoteSet assistedNote,
-        NoteHashMap pickupRelation)
-    {
+        NoteHashMap pickupRelation,
+        NoteSet sequecerNote
+    ) {
         Container contentPane = this.getContentPane();
         this.noteSet = onNote;
         KeyPanel kp = new KeyPanel(this.noteSet
-            , assistedNote, pickupRelation);
+            , assistedNote, pickupRelation, sequecerNote);
         if (null != this.dissonance) {
             kp.setDissonanceMap(this.dissonance);
         }
