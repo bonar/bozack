@@ -175,6 +175,7 @@ public final class BridgeFrame extends JFrame {
         this.deviceIn.close();
         this.deviceOut.close();
 
+        this.receiver.setDissonanceMap(this.dissonance);
         recv.addNoteEventListener(new FramePainter(this));
         recv.addNoteEventListener(new PedalListener(this));
 
