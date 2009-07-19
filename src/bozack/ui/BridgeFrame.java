@@ -1,6 +1,8 @@
 
 package bozack.ui;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import javax.swing.JFrame;
 import javax.swing.JDialog;
@@ -15,12 +17,15 @@ import javax.swing.ButtonGroup;
 import javax.swing.event.MenuListener;
 import javax.swing.event.MenuEvent;
 import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileFilter;
 import java.util.ArrayList;
 import javax.sound.midi.MidiSystem;
 import javax.sound.midi.MidiDevice;
 import javax.sound.midi.MidiDevice.Info;
 import javax.sound.midi.Transmitter;
 import javax.sound.midi.Sequencer;
+import javax.sound.midi.Sequence;
 import javax.sound.midi.Synthesizer;
 import javax.sound.midi.ShortMessage;
 import javax.sound.midi.InvalidMidiDataException;
@@ -41,6 +46,7 @@ import bozack.midi.PianoKeyEmulator;
 import bozack.midi.receiver.CustomReceiver;
 import bozack.midi.receiver.DumpRelay;
 import bozack.midi.receiver.Stabilizer;
+import bozack.midi.receiver.SequenceReceiver;
 import bozack.midi.event.FramePainter;
 import bozack.midi.event.PedalListener;
 import bozack.ui.KeyPanel;
@@ -125,6 +131,8 @@ public final class BridgeFrame extends JFrame {
         prog.setString("Connecting MIDI Devices");
         try {
             this.sequencer = MidiSystem.getSequencer();
+            this.sequencer.open();
+
             this.deviceIn  = MidiSystem.getSequencer();
             this.deviceOut = MidiSystem.getSynthesizer();
 
@@ -222,6 +230,22 @@ public final class BridgeFrame extends JFrame {
         }
     }
 
+    private class MidiFileFilter extends FileFilter {
+        public boolean accept(File f) {
+            if (f.isDirectory()) { return true; }
+            if (f.canRead() && (
+                f.getName().toLowerCase().indexOf(".mid") > 0 ||
+                f.getName().toLowerCase().indexOf(".smf") > 0 
+            )) {
+                return true;
+            }
+            return false;
+        }
+        public String getDescription() {
+            return "Standard MIDI Files";
+        }
+    }
+
     private void appendMenu() {
         JMenu menuProp = new JMenu("Filter mode");
         ButtonGroup groupProp  = new ButtonGroup();
@@ -244,8 +268,9 @@ public final class BridgeFrame extends JFrame {
         menuProp.add(menuPropDes);
         menuProp.add(menuPropDesCh);
 
-        JMenu menuFile = new JMenu("Files");
+        JMenu menuFile = new JMenu("File");
         JMenuItem menuFileLoad = new JMenuItem("Load and Play MIDI FIle");
+        menuFileLoad.addMouseListener(new LoadMidiFileAdapter(this));
         JMenuItem menuFileStop = new JMenuItem("Stop Playing");
         menuFile.add(menuFileLoad);
         menuFile.add(menuFileStop);
@@ -414,6 +439,52 @@ public final class BridgeFrame extends JFrame {
                    , "Device Error"
                    , JOptionPane.WARNING_MESSAGE);
             }
+        }
+    }
+    private class LoadMidiFileAdapter extends MouseAdapter {
+        private BridgeFrame frame;
+        LoadMidiFileAdapter(BridgeFrame f) {
+            this.frame = f;
+        }
+        public void mouseReleased(MouseEvent e) {
+            JFileChooser chooser = new JFileChooser();
+            MidiFileFilter filter = new MidiFileFilter();
+            chooser.setFileFilter(filter);
+            int returnVal = chooser.showOpenDialog(this.frame);
+            if(returnVal != JFileChooser.APPROVE_OPTION) {
+                return;
+            }
+
+            File selected = chooser.getSelectedFile();
+            try {
+                Sequence seq = MidiSystem.getSequence(selected);
+                this.frame.sequencer.setSequence(seq);
+            } catch (IOException ioe) {
+                JOptionPane.showMessageDialog(this.frame
+                   , "Cannot Read File: "
+                   + ioe.getMessage(), "File Permission Error"
+                   , JOptionPane.WARNING_MESSAGE);
+                return;
+            } catch (InvalidMidiDataException ime) {
+                JOptionPane.showMessageDialog(this.frame
+                   , "Invalid MIDI data (broken?): "
+                   + ime.getMessage(), "MIDI Sequence Error"
+                   , JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            try {
+                Transmitter tran = this.frame.sequencer.getTransmitter();
+                tran.setReceiver(new SequenceReceiver());
+            } catch (MidiUnavailableException mue) {
+                JOptionPane.showMessageDialog(this.frame
+                   , "Cannot get transmitter from sequencer: "
+                   + mue.getMessage(), "Transmitter Error"
+                   , JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            this.frame.sequencer.start();
         }
     }
 
