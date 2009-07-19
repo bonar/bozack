@@ -62,6 +62,7 @@ public final class BridgeFrame extends JFrame {
     private Bridge bridge;
     private MidiDevice deviceIn;
     private Synthesizer deviceOut;
+    private Sequencer sequencer;
     private CustomReceiver receiver;
     private PianoKeyEmulator pianoKey;
 
@@ -122,9 +123,11 @@ public final class BridgeFrame extends JFrame {
         
         prog.setValue(3);
         prog.setString("Connecting MIDI Devices");
-        this.deviceIn  = (MidiDevice)(devices.get(0));
         try {
+            this.sequencer = MidiSystem.getSequencer();
+            this.deviceIn  = MidiSystem.getSequencer();
             this.deviceOut = MidiSystem.getSynthesizer();
+
             this.connectDevice();
         } catch (MidiUnavailableException e) {
             System.err.println(e.getMessage());
@@ -241,9 +244,15 @@ public final class BridgeFrame extends JFrame {
         menuProp.add(menuPropDes);
         menuProp.add(menuPropDesCh);
 
+        JMenu menuFile = new JMenu("Files");
+        JMenuItem menuFileLoad = new JMenuItem("Load and Play MIDI FIle");
+        JMenuItem menuFileStop = new JMenuItem("Stop Playing");
+        menuFile.add(menuFileLoad);
+        menuFile.add(menuFileStop);
+
         JMenu menuDevice = new JMenu("MIDI Devices");
-        JMenu menuDeviceController = new JMenu("Select Controller");
-        JMenu menuDeviceSynth      = new JMenu("Select Synthesizer");
+        JMenuItem menuDeviceController = new JMenu("Select Controller");
+        JMenuItem menuDeviceSynth      = new JMenu("Select Synthesizer");
         JMenu menuDeviceFoot = new JMenu("Select Foot Control Device");
 
         // scan controller and synthesizer
@@ -263,7 +272,6 @@ public final class BridgeFrame extends JFrame {
             boolean checked = false;
             if (info[i].toString().equals(infoDeviceIn.toString())
                 || info[i].toString().equals(infoDeviceOut.toString())) {
-                System.out.println("match!-" + info[i].getName());
                 checked = true;
             }
             JMenuItem menuItem = new JRadioButtonMenuItem(
@@ -304,6 +312,7 @@ public final class BridgeFrame extends JFrame {
         menuHelp.add(menuHelpKey);
 
         JMenuBar menuBar = new JMenuBar();
+        menuBar.add(menuFile);
         menuBar.add(menuProp);
         menuBar.add(menuDevice);
         menuBar.add(menuHelp);
