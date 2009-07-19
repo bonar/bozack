@@ -98,6 +98,7 @@ public class CustomReceiver
     }
 
     public void send(MidiMessage message, long timeStamp) {
+        dumpMessage(message);
         if (message instanceof ShortMessage) {
             ShortMessage sm = ((ShortMessage)message);
             this.updateOnNoteSet(sm);

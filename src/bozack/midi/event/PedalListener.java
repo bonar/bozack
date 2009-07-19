@@ -41,6 +41,17 @@ public class PedalListener implements NoteEventListener {
                     case 5:
                         this.frame.chordNext(4);
                         break;
+                    case 67:
+                        if (sm.getData2() == 127) {
+                            this.frame.chordNext(0);
+                        }
+                        break;
+                    case 66:
+                        if (sm.getData2() == 127) {
+                            this.frame.chordVariate();
+                        }
+                        break;
+
                 }
             }
         }
