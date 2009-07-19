@@ -92,7 +92,8 @@ public final class Stabilizer
             NoteSet tmpNoteSet   = (NoteSet)this.assistedOnNote.clone();
             NoteSet sequencerSet = (NoteSet)this.sequencerOnNote.clone();
             // Unison with Sequencer press
-            if (sequencerSet.contains(cursorNote)) {
+            if (sequencerSet.contains(cursorNote)
+                && cursorNote.getNote() != this.lastNote.getNote()) {
                 return cursorNote;
             }
             tmpNoteSet.addAll(sequencerSet);

@@ -273,6 +273,7 @@ public final class BridgeFrame extends JFrame {
         JMenuItem menuFileLoad = new JMenuItem("Load and Play MIDI FIle");
         menuFileLoad.addMouseListener(new LoadMidiFileAdapter(this));
         JMenuItem menuFileStop = new JMenuItem("Stop Playing");
+        menuFileStop.addMouseListener(new StopMidiFileAdapter(this));
         menuFile.add(menuFileLoad);
         menuFile.add(menuFileStop);
 
@@ -442,6 +443,18 @@ public final class BridgeFrame extends JFrame {
             }
         }
     }
+
+    private class StopMidiFileAdapter extends MouseAdapter {
+        private BridgeFrame frame;
+        StopMidiFileAdapter(BridgeFrame f) {
+            this.frame = f;
+        }
+        public void mouseReleased(MouseEvent e) {
+            this.frame.sequencer.stop();
+            this.frame.clearKeyPanel();
+        }
+    }
+
     private class LoadMidiFileAdapter extends MouseAdapter {
         private BridgeFrame frame;
         LoadMidiFileAdapter(BridgeFrame f) {
@@ -527,11 +540,13 @@ public final class BridgeFrame extends JFrame {
         contentPane.validate();
     }
 
+    public void clearKeyPanel () {
+        this.paintKeyPanel(new NoteSet());
+    }
     public void paintKeyPanel (NoteSet onNote) {
         this.paintKeyPanel(onNote, new NoteSet()
             , new NoteHashMap(), new NoteSet());
     }
-
     public void paintKeyPanel (
         NoteSet onNote,
         NoteSet assistedNote,
