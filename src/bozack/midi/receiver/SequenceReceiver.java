@@ -27,11 +27,11 @@ public class SequenceReceiver implements Receiver {
         switch (sm.getCommand()) {
             case ShortMessage.NOTE_ON:
                 this.receiver.sequencerNoteOn(sm.getData1());
-                this.repainFrame();
+                //this.repainFrame();
                 return;
             case ShortMessage.NOTE_OFF:
                 this.receiver.sequencerNoteOff(sm.getData1());
-                this.repainFrame();
+                //this.repainFrame();
                 return;
         }
     }
