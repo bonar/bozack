@@ -1,0 +1,24 @@
+<jnlp 
+  spec="1.0+" 
+  codebase="http://idisk.mac.com/bonar/Public/bozack"
+  href="bozack.jnlp">
+
+  <information> 
+    <title>bozack</title> 
+    <vendor>bonar</vendor> 
+    <offline-allowed/> 
+    <shortcut/> 
+  </information> 
+
+  <security> 
+    <all-permissions/> 
+  </security>
+
+  <resources> 
+    <j2se version="1.5"/> 
+    <jar href="bozack.jar"/> 
+  </resources> 
+
+  <application-desc main-class="StartBozack"/> 
+
+</jnlp>
