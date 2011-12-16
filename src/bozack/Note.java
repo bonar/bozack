@@ -10,7 +10,7 @@ public final class Note {
 
     public static final int PITCH_SCALE = 12;
     // calculate note frequency with these values
-    public static final double SEMITONE_FREQ_RATIO = 
+    public static final double SEMITONE_FREQ_RATIO =
         Math.pow(10, ((Math.log(2) / Math.log(10)) / PITCH_SCALE));
     private static final int    FREQCALC_BASE_NOTE = 12;
     private static final double FREQCALC_BASE_FREQ = 16.351597831287418d;
@@ -61,7 +61,7 @@ public final class Note {
     }
 
     public Note(ChromaName pn, int octav) {
-        this((octav * PITCH_SCALE) + 
+        this((octav * PITCH_SCALE) +
             (Integer)chromaName.get(pn).intValue()
         );
     }
@@ -104,9 +104,9 @@ public final class Note {
                 double x12 = Math.abs(39.863d * Math.log10(
                     overtoneQ / overtoneP));
                 double d12 = amp * PLTHEORY_ALPHA_3 * (
-                    Math.exp(-1.0d * PLTHEORY_ALPHA_1 
+                    Math.exp(-1.0d * PLTHEORY_ALPHA_1
                     * Math.pow(x12, PLTHEORY_BETA)) -
-                    Math.exp(-1.0d * PLTHEORY_ALPHA_2 
+                    Math.exp(-1.0d * PLTHEORY_ALPHA_2
                     * Math.pow(x12, PLTHEORY_BETA))
                 );
                 sum += d12;

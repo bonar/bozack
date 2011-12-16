@@ -21,8 +21,8 @@ public final class DumpRelay
                 sm.getData1(), sm.getData2());
             return;
         }
-        else if ((sm.getCommand() == ShortMessage.NOTE_ON 
-            && sm.getData2() == 0) || 
+        else if ((sm.getCommand() == ShortMessage.NOTE_ON
+            && sm.getData2() == 0) ||
             sm.getCommand() == ShortMessage.NOTE_OFF
             ) {
             this.defaultChannel.noteOff(

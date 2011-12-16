@@ -16,7 +16,7 @@ public class PedalListener implements NoteEventListener {
     }
 
     public void performOnNote(CustomReceiver recv, Note onNote) { }
-    
+
     public void  performOffNote(CustomReceiver recv, Note offNote) { }
 
     public void performControl(

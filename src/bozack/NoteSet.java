@@ -6,7 +6,7 @@ import bozack.DissonanceMap;
 import java.util.LinkedHashSet;
 import java.util.Iterator;
 
-public final class NoteSet extends LinkedHashSet<Note> 
+public final class NoteSet extends LinkedHashSet<Note>
     implements Cloneable {
 
     private DissonanceMap dissonance = new DissonanceMap();

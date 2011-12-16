@@ -54,7 +54,7 @@ public class Bridge {
         }
     }
 
-    public void connect(MidiDevice device_in, MidiDevice device_out) 
+    public void connect(MidiDevice device_in, MidiDevice device_out)
         throws MidiUnavailableException {
 
         javax.sound.midi.Transmitter trans;
@@ -69,7 +69,7 @@ public class Bridge {
     }
 
     public void connect(MidiDevice device_in, MidiDevice device_out
-        , CustomReceiver recv) 
+        , CustomReceiver recv)
         throws MidiUnavailableException {
 
         if (!device_out.isOpen()) { device_out.open(); }

@@ -7,7 +7,7 @@ import bozack.ChordType;
 import bozack.Types;
 
 /**
- * NoteHop is used to represent distance from the Note to 
+ * NoteHop is used to represent distance from the Note to
  * another Note in some Chord
  */
 final class NoteHop {

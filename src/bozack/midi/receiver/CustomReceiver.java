@@ -164,7 +164,7 @@ public class CustomReceiver
     public void handleMessage(
         MidiMessage message, long timeStamp) { }
     public void handleShortMessage(
-        ShortMessage message, long timeStamp) { 
+        ShortMessage message, long timeStamp) {
         System.out.println("parent method"); }
     public void close() { }
 

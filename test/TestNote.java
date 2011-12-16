@@ -43,7 +43,7 @@ public class TestNote {
     public void equals_and_hashCode() {
         bozack.Note a30 = new bozack.Note(30);
         bozack.Note a31 = new bozack.Note(31);
-        
+
         bozack.Note b30 = new bozack.Note(30);
         bozack.Note b31 = new bozack.Note(31);
 
