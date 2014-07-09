@@ -32,8 +32,8 @@ public final class Stabilizer
             this.noteOn(new Note(sm.getData1()), sm.getData2());
             return;
         }
-        else if ((sm.getCommand() == ShortMessage.NOTE_ON 
-            && sm.getData2() == 0) || 
+        else if ((sm.getCommand() == ShortMessage.NOTE_ON
+            && sm.getData2() == 0) ||
             sm.getCommand() == ShortMessage.NOTE_OFF
             ) {
             this.noteOff(new Note(sm.getData1()), sm.getData2());
@@ -124,11 +124,11 @@ public final class Stabilizer
 
             double neibour_bonus = NEIBOUR_BONUS_RATE * scanRange;
             double total = des - neibour_bonus - chord_bonus;
-            System.out.println("[" + tmpNote 
+            System.out.println("[" + tmpNote
                 + "] score = basedis:" + des
                 + " neibour:" + neibour_bonus
                 + " chord:" + chord_bonus
-                + " total:" + total); 
+                + " total:" + total);
 
             if (!this.assistedOnNote.contains(cursorNote) &&
                 des < DIRECT_RETURN_BORDER) {

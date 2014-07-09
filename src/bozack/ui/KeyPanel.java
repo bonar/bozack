@@ -81,7 +81,7 @@ public final class KeyPanel extends JPanel {
             NoteSet tmpNoteSet = (NoteSet)this.noteSet.clone();
             tmpNoteSet.add(cursorNote);
             double des = tmpNoteSet.getDessonance(this.dissonance);
-            int desIndex = 255 - (int)(255.0d 
+            int desIndex = 255 - (int)(255.0d
                 * (des / (tmpNoteSet.size() * 5)));
             if (desIndex < 0) {
                 desIndex = 0;
@@ -105,7 +105,7 @@ public final class KeyPanel extends JPanel {
                 g.setColor(heatColor);
                 g.fillRect((x - x_col_width), y, KEY_WIDTH, KEY_HEIGHT);
             }
-           
+
             if (des > 0.01d) {
                 if (isOnNote) {
                     g.setColor(Color.black);
@@ -140,7 +140,7 @@ public final class KeyPanel extends JPanel {
                 Note fromNote = pickupRelation.scanValue(cursorNote);
                 if (null != fromNote) {
                     g.setColor(Color.white);
-                    g.drawString(chromaToString(fromNote.getChroma()) 
+                    g.drawString(chromaToString(fromNote.getChroma())
                         + " " + (note / 12)
                         , ((x - x_col_width)+ 10), (y + 105));
                 }

@@ -77,7 +77,7 @@ public final class BridgeFrame extends JFrame {
     private static final int DISSONANCE_MAP_MAX = 120;
 
     private ChordProgression chordProg;
-    
+
     private static final String IMAGE_PATH = "splash.png";
 
     public BridgeFrame() {
@@ -95,7 +95,7 @@ public final class BridgeFrame extends JFrame {
         JProgressBar prog = new JProgressBar(0, 5);
         prog.setStringPainted(true);
         splash.getContentPane().add(prog, BorderLayout.SOUTH);
-        
+
         splash.pack();
         splash.setResizable(false);
         splash.setVisible(true);
@@ -126,7 +126,7 @@ public final class BridgeFrame extends JFrame {
 
         this.bridge = new Bridge();
         ArrayList devices = Bridge.getDevices();
-        
+
         prog.setValue(3);
         prog.setString("Connecting MIDI Devices");
         try {
@@ -209,11 +209,11 @@ public final class BridgeFrame extends JFrame {
         this.paintConnectionPanel();
 
         System.out.println("Device reconnected");
-        System.out.println(" - IN: " 
+        System.out.println(" - IN: "
             + this.deviceIn.getDeviceInfo().getName());
-        System.out.println(" - OUT: " 
+        System.out.println(" - OUT: "
             + this.deviceOut.getDeviceInfo().getName());
-        System.out.println(" - RECV: " 
+        System.out.println(" - RECV: "
             + this.receiver.getClass().getName());
     }
 
@@ -236,7 +236,7 @@ public final class BridgeFrame extends JFrame {
             if (f.isDirectory()) { return true; }
             if (f.canRead() && (
                 f.getName().toLowerCase().indexOf(".mid") > 0 ||
-                f.getName().toLowerCase().indexOf(".smf") > 0 
+                f.getName().toLowerCase().indexOf(".smf") > 0
             )) {
                 return true;
             }

@@ -23,7 +23,7 @@ public class FramePainter implements NoteEventListener {
             , recv.getSequencerOnNote()
             );
     }
-    
+
     public void  performOffNote(CustomReceiver recv, Note offNote) {
         this.frame.paintKeyPanel(
               recv.getOnNote()
